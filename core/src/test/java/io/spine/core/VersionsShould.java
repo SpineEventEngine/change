@@ -21,35 +21,33 @@
 package io.spine.core;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.test.Values;
 import org.junit.Test;
 
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Alexander Yevsyukov
  */
-public class FailuresShould {
+public class VersionsShould {
 
     @Test
-    public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Failures.class);
+    public void have_private_utility_ctor() {
+        assertHasPrivateParameterlessCtor(Versions.class);
     }
 
     @Test
     public void pass_null_tolerance_check() {
         new NullPointerTester()
-                .setDefault(Command.class, Command.getDefaultInstance())
-                .setDefault(CommandId.class, CommandId.getDefaultInstance())
-                .testAllPublicStaticMethods(Failures.class);
+                .setDefault(Version.class, Versions.create())
+                .testAllPublicStaticMethods(Versions.class);
     }
 
-    @Test
-    public void generate_failure_id_upon_command_id() {
-        final CommandId commandId = Commands.generateId();
-        final FailureId actual = Failures.generateId(commandId);
-
-        final String expected = String.format(Failures.FAILURE_ID_FORMAT, commandId.getUuid());
-        assertEquals(expected, actual.getValue());
+    @Test(expected = IllegalArgumentException.class)
+    public void check_version_increment() {
+        Versions.checkIsIncrement(
+                Values.newVersionWithNumber(2),
+                Values.newVersionWithNumber(1)
+        );
     }
 }
