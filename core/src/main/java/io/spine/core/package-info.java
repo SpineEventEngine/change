@@ -19,15 +19,11 @@
  */
 
 /**
- * This package provides classes that wrap {@code Message} objects that
- * hold other {@code Message} objects if interest.
- *
- * <p>For example, {@link io.spine.core.CommandEnvelope CommandEnvelope}
- * holds {@link io.spine.base.Command Command} and provides access to its message,
- * context, type, etc.
+ * This package provides generated classes and interfaces with general data types for building
+ * event-sourcing applications.
  */
 
 @ParametersAreNonnullByDefault
-package io.spine.envelope;
+package io.spine.core;
 
 import javax.annotation.ParametersAreNonnullByDefault;
