@@ -18,16 +18,36 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.core;
+
+import com.google.common.testing.NullPointerTester;
+import io.spine.test.Values;
+import org.junit.Test;
+
+import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
+
 /**
- * This package provides classes that wrap {@code Message} objects that
- * hold other {@code Message} objects if interest.
- *
- * <p>For example, {@link io.spine.core.CommandEnvelope CommandEnvelope}
- * holds {@link io.spine.base.Command Command} and provides access to its message,
- * context, type, etc.
+ * @author Alexander Yevsyukov
  */
+public class VersionsShould {
 
-@ParametersAreNonnullByDefault
-package io.spine.envelope;
+    @Test
+    public void have_private_utility_ctor() {
+        assertHasPrivateParameterlessCtor(Versions.class);
+    }
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    @Test
+    public void pass_null_tolerance_check() {
+        new NullPointerTester()
+                .setDefault(Version.class, Versions.create())
+                .testAllPublicStaticMethods(Versions.class);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void check_version_increment() {
+        Versions.checkIsIncrement(
+                Values.newVersionWithNumber(2),
+                Values.newVersionWithNumber(1)
+        );
+    }
+}

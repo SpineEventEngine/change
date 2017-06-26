@@ -18,16 +18,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package io.spine.core;
+
+import com.google.protobuf.Message;
+import io.spine.type.MessageClass;
+
 /**
- * This package provides classes that wrap {@code Message} objects that
- * hold other {@code Message} objects if interest.
+ * A common interface for obtaining messages from wrapping objects.
  *
- * <p>For example, {@link io.spine.core.CommandEnvelope CommandEnvelope}
- * holds {@link io.spine.base.Command Command} and provides access to its message,
- * context, type, etc.
+ * @param <T> the type of the object that wraps a message
+ * @author Alex Tymchenko
+ * @author Alexander Yevsyukov
  */
+public interface MessageEnvelope<T> {
 
-@ParametersAreNonnullByDefault
-package io.spine.envelope;
+    /**
+     * Obtains the object which contains the message of interest.
+     */
+    T getOuterObject();
 
-import javax.annotation.ParametersAreNonnullByDefault;
+    /**
+     * Obtains the message.
+     */
+    Message getMessage();
+
+    /**
+     * Obtains the message class.
+     */
+    MessageClass getMessageClass();
+}
