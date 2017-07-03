@@ -18,16 +18,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * This package provides classes that wrap {@code Message} objects that
- * hold other {@code Message} objects if interest.
- *
- * <p>For example, {@link io.spine.core.CommandEnvelope CommandEnvelope}
- * holds {@link io.spine.base.Command Command} and provides access to its message,
- * context, type, etc.
- */
+package io.spine.core;
 
-@ParametersAreNonnullByDefault
-package io.spine.envelope;
+import com.google.protobuf.BoolValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.StringValue;
+import org.junit.Test;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import static org.junit.Assert.assertEquals;
+
+public class EventClassShould {
+
+    @Test
+    public void create_set_on_varargs() {
+        assertEquals(3, EventClass.setOf(
+                BoolValue.class,
+                Int32Value.class,
+                StringValue.class).size());
+    }
+}

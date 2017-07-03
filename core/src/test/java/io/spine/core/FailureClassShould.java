@@ -17,45 +17,31 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package io.spine.core;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.core.given.GivenVersion;
+import com.google.protobuf.BoolValue;
+import com.google.protobuf.Int32Value;
+import com.google.protobuf.StringValue;
 import org.junit.Test;
 
-import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Alexander Yevsyukov
+ * @author Alex Tymchenko
  */
-public class VersionsShould {
+public class FailureClassShould {
 
     @Test
-    public void have_private_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Versions.class);
+    public void create_set_on_varargs() {
+        assertEquals(3,
+                     FailureClass.setOf(BoolValue.class, Int32Value.class, StringValue.class)
+                                 .size());
     }
 
     @Test
-    public void pass_null_tolerance_check() {
+    public void pass_null_tolerance_check() throws Exception {
         new NullPointerTester()
-                .setDefault(Version.class, Versions.zero())
-                .testAllPublicStaticMethods(Versions.class);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void check_version_increment() {
-        Versions.checkIsIncrement(
-                GivenVersion.withNumber(2),
-                GivenVersion.withNumber(1)
-        );
-    }
-
-    @Test
-    public void increment() {
-        final Version v1 = GivenVersion.withNumber(1);
-        assertEquals(v1.getNumber() + 1, Versions.increment(v1)
-                                                 .getNumber());
+                .testAllPublicStaticMethods(FailureClass.class);
     }
 }
