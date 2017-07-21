@@ -20,49 +20,44 @@
 
 package io.spine.core;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Message;
-
-import java.util.Objects;
+import io.spine.protobuf.AnyPacker;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Abstract base for classes implementing {@link MessageEnvelope}.
+ * Utility class with utilities for this package.
  *
- * @param <I> the class of the message ID
- * @param <T> the type of the object that wraps a message
  * @author Alexander Yevsyukov
- * @author Alex Tymchenko
  */
-public abstract class AbstractMessageEnvelope<I extends Message, T>
-        implements MessageEnvelope<I, T> {
+class Messages {
 
-    private final T object;
-
-    AbstractMessageEnvelope(T object) {
-        checkNotNull(object);
-        this.object = object;
+    private Messages() {
+        // Prevent instantiation of this utility class.
     }
 
-    @Override
-    public T getOuterObject() {
-        return object;
-    }
+    /**
+     * Extracts a message if the passed instance is an outer object or {@link Any},
+     * otherwise returns the passed message.
+     */
+    @SuppressWarnings("ChainOfInstanceofChecks")
+    static Message ensureMessage(Message outerOrMessage) {
+        final Message input = checkNotNull(outerOrMessage);
+        Message msg;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(object);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
+        //TODO:2017-07-19:alexander.yevsyukov: Replace this with default MessageClass behaviour in Java 8.
+        if (input instanceof Command) {
+            msg = Commands.getMessage((Command) outerOrMessage);
+        } else if (input instanceof Event) {
+            msg = Events.getMessage((Event) outerOrMessage);
+        } else if (input instanceof Failure) {
+            msg = Failures.getMessage((Failure) outerOrMessage);
+        } else if (input instanceof Any) {
+            msg = AnyPacker.unpack((Any) outerOrMessage);
+        } else {
+            msg = input;
         }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractMessageEnvelope other = (AbstractMessageEnvelope) obj;
-        return Objects.equals(this.object, other.object);
+        return msg;
     }
 }
