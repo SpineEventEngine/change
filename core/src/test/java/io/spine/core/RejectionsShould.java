@@ -26,11 +26,10 @@ import com.google.protobuf.StringValue;
 import com.google.protobuf.util.Timestamps;
 import io.spine.base.ThrowableMessage;
 import io.spine.protobuf.AnyPacker;
+import io.spine.test.TestValues;
 import org.junit.Test;
 
-import static io.spine.Identifier.newUuid;
-import static io.spine.core.Failures.toFailure;
-import static io.spine.protobuf.TypeConverter.toMessage;
+import static io.spine.core.Rejections.toRejection;
 import static io.spine.test.TestValues.newUuidValue;
 import static io.spine.test.Tests.assertHasPrivateParameterlessCtor;
 import static org.junit.Assert.assertEquals;
@@ -40,11 +39,11 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Alexander Yevsyukov
  */
-public class FailuresShould {
+public class RejectionsShould {
 
     @Test
     public void have_utility_ctor() {
-        assertHasPrivateParameterlessCtor(Failures.class);
+        assertHasPrivateParameterlessCtor(Rejections.class);
     }
 
     @Test
@@ -53,22 +52,22 @@ public class FailuresShould {
                 .setDefault(Command.class, Command.getDefaultInstance())
                 .setDefault(CommandId.class, CommandId.getDefaultInstance())
                 .setDefault(ThrowableMessage.class, new TestThrowableMessage(newUuidValue()))
-                .testAllPublicStaticMethods(Failures.class);
+                .testAllPublicStaticMethods(Rejections.class);
     }
 
     @Test
-    public void generate_failure_id_upon_command_id() {
+    public void generate_rejection_id_upon_command_id() {
         final CommandId commandId = Commands.generateId();
-        final FailureId actual = Failures.generateId(commandId);
+        final RejectionId actual = Rejections.generateId(commandId);
 
-        final String expected = String.format(Failures.FAILURE_ID_FORMAT, commandId.getUuid());
+        final String expected = String.format(Rejections.REJECTION_ID_FORMAT, commandId.getUuid());
         assertEquals(expected, actual.getValue());
     }
 
 
     @Test
-    public void convert_throwable_message_to_failure_message() {
-        final StringValue failureState = toMessage(newUuid());
+    public void convert_throwable_message_to_rejection_message() {
+        final StringValue rejectionState = TestValues.newUuidValue();
         final CommandContext context = CommandContext.newBuilder()
                                                    .build();
         final Command command = Command.newBuilder()
@@ -76,17 +75,17 @@ public class FailuresShould {
                                      .setContext(context)
                                      .build();
 
-        final TestThrowableMessage throwableMessage = new TestThrowableMessage(failureState);
-        final Failure failureWrapper = toFailure(throwableMessage, command);
+        final TestThrowableMessage throwableMessage = new TestThrowableMessage(rejectionState);
+        final Rejection rejectionWrapper = toRejection(throwableMessage, command);
 
-        assertEquals(failureState, AnyPacker.unpack(failureWrapper.getMessage()));
-        assertFalse(failureWrapper.getContext()
-                                  .getStacktrace()
-                                  .isEmpty());
-        assertTrue(Timestamps.isValid(failureWrapper.getContext()
-                                                    .getTimestamp()));
-        final Command wrappedCommand = failureWrapper.getContext()
-                                                     .getCommand();
+        assertEquals(rejectionState, AnyPacker.unpack(rejectionWrapper.getMessage()));
+        assertFalse(rejectionWrapper.getContext()
+                                    .getStacktrace()
+                                    .isEmpty());
+        assertTrue(Timestamps.isValid(rejectionWrapper.getContext()
+                                                      .getTimestamp()));
+        final Command wrappedCommand = rejectionWrapper.getContext()
+                                                       .getCommand();
         assertEquals(command, wrappedCommand);
     }
 

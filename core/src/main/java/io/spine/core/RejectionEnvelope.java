@@ -24,68 +24,59 @@ import com.google.protobuf.Message;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Wraps the business failure into a transferable parcel which provides a convenient access to
+ * Wraps the business rejection into a transferable parcel which provides a convenient access to
  * its properties.
  *
  * @author Alex Tymchenko
  */
-public class FailureEnvelope extends AbstractMessageEnvelope<FailureId, Failure> {
+public class RejectionEnvelope extends AbstractMessageEnvelope<RejectionId, Rejection> {
 
-    /**
-     * The failure message.
-     */
-    private final Message failureMessage;
+    /** The rejection message. */
+    private final Message rejectionMessage;
 
-    /**
-     * The failure class.
-     */
-    private final FailureClass failureClass;
+    /** The class of the rejection. */
+    private final RejectionClass rejectionClass;
 
-    /**
-     * The message of a {@link Command}, which processing triggered the failure.
-     */
+    /** The message of a {@link Command}, processing of which triggered the rejection. */
     private final Message commandMessage;
 
-    /**
-     * The context of a {@link Command}, which processing triggered the failure.
-     */
+    /** The context of a {@link Command}, which processing triggered the rejection. */
     private final CommandContext commandContext;
 
-    private FailureEnvelope(Failure failure) {
-        super(failure);
-        this.failureMessage = Failures.getMessage(failure);
-        this.failureClass = FailureClass.of(failureMessage);
-        this.commandMessage = Commands.getMessage(failure.getContext()
-                                                         .getCommand());
-        this.commandContext = failure.getContext()
-                                     .getCommand()
-                                     .getContext();
+    private RejectionEnvelope(Rejection rejection) {
+        super(rejection);
+        this.rejectionMessage = Rejections.getMessage(rejection);
+        this.rejectionClass = RejectionClass.of(rejectionMessage);
+        final RejectionContext context = rejection.getContext();
+        final Command command = context.getCommand();
+        this.commandMessage = Commands.getMessage(command);
+        this.commandContext = command.getContext();
     }
 
     /**
-     * Creates instance for the passed failure.
+     * Creates instance for the passed rejection.
      */
-    public static FailureEnvelope of(Failure failure) {
-        checkNotNull(failure);
-        return new FailureEnvelope(failure);
+    public static RejectionEnvelope of(Rejection rejection) {
+        checkNotNull(rejection);
+        return new RejectionEnvelope(rejection);
     }
 
     /**
-     * Obtains the Failure ID.
+     * Obtains the ID of the rejection.
      */
     @Override
-    public FailureId getId() {
+    public RejectionId getId() {
         return getOuterObject().getId();
     }
 
     @Override
     public Message getMessage() {
-        return failureMessage;
+        return rejectionMessage;
     }
 
     @Override
-    public FailureClass getMessageClass() {
-        return failureClass;
+    public RejectionClass getMessageClass() {
+        return rejectionClass;
     }
 
     @Override
@@ -94,13 +85,13 @@ public class FailureEnvelope extends AbstractMessageEnvelope<FailureId, Failure>
     }
 
     /**
-     * Sets the context of the failure as the context origin of the event being built.
+     * Sets the context of the rejection as the context origin of the event being built.
      *
      * @param builder event context builder into which set the event origin context
      */
     @Override
     public void setOriginContext(EventContext.Builder builder) {
-        builder.setFailureContext(getOuterObject().getContext());
+        builder.setRejectionContext(getOuterObject().getContext());
     }
 
     public Message getCommandMessage() {

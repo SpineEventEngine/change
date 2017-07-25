@@ -30,18 +30,18 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Alex Tymchenko
  */
-public class FailureClassShould {
+public class RejectionClassShould {
 
     @Test
     public void create_set_on_varargs() {
         assertEquals(3,
-                     FailureClass.setOf(BoolValue.class, Int32Value.class, StringValue.class)
-                                 .size());
+                     RejectionClass.setOf(BoolValue.class, Int32Value.class, StringValue.class)
+                                   .size());
     }
 
     @Test
     public void pass_null_tolerance_check() throws Exception {
         new NullPointerTester()
-                .testAllPublicStaticMethods(FailureClass.class);
+                .testAllPublicStaticMethods(RejectionClass.class);
     }
 }
