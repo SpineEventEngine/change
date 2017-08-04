@@ -39,7 +39,7 @@ public abstract class AbstractMessageEnvelope<I extends Message, T>
 
     private final T object;
 
-    AbstractMessageEnvelope(T object) {
+    public AbstractMessageEnvelope(T object) {
         checkNotNull(object);
         this.object = object;
     }
