@@ -22,48 +22,24 @@ package io.spine.core;
 
 import com.google.protobuf.Message;
 
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
- * Abstract base for classes implementing {@link MessageEnvelope}.
+ * A common interface for messages sent by an actor.
  *
- * @param <I> the class of the message ID
+ * @param <I> the type of the message ID
  * @param <T> the type of the object that wraps a message
  * @param <C> the type of the message context
  * @author Alexander Yevsyukov
- * @author Alex Tymchenko
  */
-public abstract class AbstractMessageEnvelope<I extends Message, T, C extends Message>
-        implements MessageEnvelope<I, T, C> {
+public interface ActorMessageEnvelope<I extends Message, T, C extends Message>
+        extends MessageEnvelope<I, T, C> {
 
-    private final T object;
+    /**
+     * Obtains ID of the tenant in which context the actor works.
+     */
+    TenantId getTenantId();
 
-    public AbstractMessageEnvelope(T object) {
-        checkNotNull(object);
-        this.object = object;
-    }
-
-    @Override
-    public T getOuterObject() {
-        return object;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(object);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractMessageEnvelope other = (AbstractMessageEnvelope) obj;
-        return Objects.equals(this.object, other.object);
-    }
+    /**
+     * Obtains an actor context for the wrapped message.
+     */
+    ActorContext getActorContext();
 }
