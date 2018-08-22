@@ -17,24 +17,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.core;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import com.google.protobuf.Empty;
+import io.spine.type.MessageClass;
 
 /**
- * @author Alex Tymchenko
+ * The class of an {@link Empty} message.
+ *
+ * @author Dmytro Dashenkov
  */
-@DisplayName("RejectionClass should")
-class RejectionClassTest {
+public final class EmptyClass extends MessageClass {
 
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(RejectionClass.class);
+    private static final long serialVersionUID = 0L;
+
+    private EmptyClass() {
+        super(Empty.class);
+    }
+
+    /**
+     * @return the single instance of the {@code EmptyClass}
+     */
+    public static EmptyClass instance() {
+        return Singleton.INSTANCE.value;
+    }
+
+    private enum Singleton {
+        INSTANCE;
+        @SuppressWarnings("NonSerializableFieldInSerializableClass")
+        private final EmptyClass value = new EmptyClass();
     }
 }
