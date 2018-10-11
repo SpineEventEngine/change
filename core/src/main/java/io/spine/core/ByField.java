@@ -20,36 +20,28 @@
 
 package io.spine.core;
 
-import com.google.protobuf.Empty;
-import io.spine.type.MessageClass;
+import java.lang.annotation.Target;
 
 /**
- * The class of an {@link Empty} message.
+ * The by-field message filter.
  *
- * @author Dmytro Dashenkov
+ * <p>This annotation should not be used directly to mark anything.
+ * Instead, use the annotation instances as
+ * a {@link io.spine.core.Subscribe#filter() @Subscribe.filter)} parameter.
  */
-public final class EmptyClass extends MessageClass<Empty> {
-
-    private static final long serialVersionUID = 0L;
-    private static final EmptyClass INSTANCE = new EmptyClass();
-
-    private EmptyClass() {
-        super(Empty.class);
-    }
+@Target({})
+public @interface ByField {
 
     /**
-     * Return the single instance of the {@code EmptyClass}.
+     * The {@linkplain io.spine.base.FieldPath path to the field} to filter by.
      */
-    public static EmptyClass instance() {
-        return INSTANCE;
-    }
+    String path();
 
-    @Override
-    public String toString() {
-        return "EmptyClass.instance()";
-    }
-
-    private Object readResolve() {
-        return INSTANCE;
-    }
+    /**
+     * The expected value of the field.
+     *
+     * <p>The value converted with help of {@link io.spine.string.Stringifier Stringifier}s into
+     * the type of the actual value of the message field.
+     */
+    String value();
 }
