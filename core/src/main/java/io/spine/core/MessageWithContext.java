@@ -17,24 +17,29 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package io.spine.core;
 
-import com.google.common.testing.NullPointerTester;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.spine.testing.DisplayNames.NOT_ACCEPT_NULLS;
+import com.google.protobuf.Any;
+import com.google.protobuf.Message;
 
 /**
- * @author Alex Tymchenko
+ * Base interfaces for outer objects of messages with contexts, such as commands or events.
  */
-@DisplayName("RejectionClass should")
-class RejectionClassTest {
+public interface MessageWithContext extends Message {
 
-    @Test
-    @DisplayName(NOT_ACCEPT_NULLS)
-    void passNullToleranceCheck() {
-        new NullPointerTester()
-                .testAllPublicStaticMethods(RejectionClass.class);
-    }
+    /**
+     * Obtains the identifier of the message.
+     */
+    Message getId();
+
+    /**
+     * Obtains the enclosed message.
+     */
+    Any getMessage();
+
+    /**
+     * Obtains the context of the enclosed message.
+     */
+    Message getContext();
 }
