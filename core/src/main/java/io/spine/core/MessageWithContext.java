@@ -20,25 +20,26 @@
 
 package io.spine.core;
 
+import com.google.protobuf.Any;
 import com.google.protobuf.Message;
 
 /**
- * A common interface for messages sent by an actor.
- *
- * @param <I> the type of the message ID
- * @param <T> the type of the object that wraps a message
- * @param <C> the type of the message context
+ * Base interfaces for outer objects of messages with contexts, such as commands or events.
  */
-public interface ActorMessageEnvelope<I extends Message, T, C extends Message>
-        extends MessageEnvelope<I, T, C> {
+public interface MessageWithContext extends Message {
 
     /**
-     * Obtains ID of the tenant in which context the actor works.
+     * Obtains the identifier of the message.
      */
-    TenantId getTenantId();
+    Message getId();
 
     /**
-     * Obtains an actor context for the wrapped message.
+     * Obtains the enclosed message.
      */
-    ActorContext getActorContext();
+    Any getMessage();
+
+    /**
+     * Obtains the context of the enclosed message.
+     */
+    Message getContext();
 }
