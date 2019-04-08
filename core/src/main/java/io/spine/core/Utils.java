@@ -20,37 +20,23 @@
 
 package io.spine.core;
 
-import com.google.protobuf.Any;
-import com.google.protobuf.Message;
-import io.spine.base.MessageContext;
-import io.spine.type.TypeUrl;
+import com.google.protobuf.Timestamp;
+import io.spine.time.Temporals;
+import io.spine.time.TimestampTemporal;
 
 /**
- * Base interfaces for outer objects of messages with contexts, such as commands or events.
- *
- * @apiNote Some methods use the {@code 'get'} prefix to mix-in with the generated code.
+ * Utilities for working with core types.
  */
-public interface MessageWithContext extends Message {
+public final class Utils {
+
+    /** Prevents instantiation of this utility class. */
+    private Utils() {
+    }
 
     /**
-     * Obtains the identifier of the message.
+     * Converts the passed {@code Timestamp} to {@code TimestampTemporal}.
      */
-    Message getId();
-
-    /**
-     * Obtains the enclosed message.
-     */
-    Any getMessage();
-
-    /**
-     * Obtains the context of the enclosed message.
-     */
-    MessageContext getContext();
-
-    /**
-     * Obtains the type URL of the enclosed message.
-     */
-    default TypeUrl typeUrl() {
-        return TypeUrl.ofEnclosed(getMessage());
+    public static TimestampTemporal toTemporal(Timestamp t) {
+        return (TimestampTemporal) Temporals.from(t);
     }
 }
