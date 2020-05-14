@@ -20,38 +20,36 @@
 
 package io.spine.core;
 
-import com.google.protobuf.Message;
-import io.spine.protobuf.AnyPacker;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.TextFormat.shortDebugString;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
+import io.spine.base.Error;
 
 /**
- * Utilities for working with {@linkplain Ack acknowledgements}.
+ * Mixin interface for the {@link Response} objects.
  */
-public final class Acks {
+@GeneratedMixin
+@Immutable
+interface ResponseMixin extends ResponseOrBuilder {
 
-    /** Prevents instantiation of this utility class. */
-    private Acks() {
+    /**
+     * Verifies if this response has the {@link Status.StatusCase#OK OK} status.
+     */
+    default boolean isOk() {
+        return getStatus().getStatusCase() == Status.StatusCase.OK;
     }
 
     /**
-     * Extracts the ID of the acknowledged command.
-     *
-     * @throws IllegalArgumentException
-     *         if the acknowledgement does not contain a command ID
+     * Verifies if this response has the {@link Status.StatusCase#ERROR ERROR} status.
      */
-    public static CommandId toCommandId(Ack ack) {
-        checkNotNull(ack);
-        Message unpacked = AnyPacker.unpack(ack.getMessageId());
-        if (!(unpacked instanceof CommandId)) {
-            throw newIllegalArgumentException(
-                    "Unable to get a command ID from the acknowledgement: `%s`.",
-                    shortDebugString(ack)
-            );
-        }
-        CommandId commandId = (CommandId) unpacked;
-        return commandId;
+    default boolean isError() {
+        return getStatus().getStatusCase() == Status.StatusCase.ERROR;
+    }
+
+    /**
+     * Obtains the error associated with the response or default instance is the response is not
+     * an error.
+     */
+    default Error error() {
+        return getStatus().getError();
     }
 }
