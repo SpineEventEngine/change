@@ -20,38 +20,30 @@
 
 package io.spine.core;
 
-import com.google.protobuf.Message;
-import io.spine.protobuf.AnyPacker;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.protobuf.TextFormat.shortDebugString;
-import static io.spine.util.Exceptions.newIllegalArgumentException;
+import com.google.errorprone.annotations.Immutable;
 
 /**
- * Utilities for working with {@linkplain Ack acknowledgements}.
+ * An object associated with an acting user.
  */
-public final class Acks {
+@Immutable
+public interface WithActor {
 
-    /** Prevents instantiation of this utility class. */
-    private Acks() {
+    /**
+     * The context of the associated user.
+     */
+    ActorContext actorContext();
+
+    /**
+     * The ID of the associated user.
+     */
+    default UserId actor() {
+        return actorContext().getActor();
     }
 
     /**
-     * Extracts the ID of the acknowledged command.
-     *
-     * @throws IllegalArgumentException
-     *         if the acknowledgement does not contain a command ID
+     * Obtains the ID of the tenant under which the message was created.
      */
-    public static CommandId toCommandId(Ack ack) {
-        checkNotNull(ack);
-        Message unpacked = AnyPacker.unpack(ack.getMessageId());
-        if (!(unpacked instanceof CommandId)) {
-            throw newIllegalArgumentException(
-                    "Unable to get a command ID from the acknowledgement: `%s`.",
-                    shortDebugString(ack)
-            );
-        }
-        CommandId commandId = (CommandId) unpacked;
-        return commandId;
+    default TenantId tenant() {
+        return actorContext().getTenantId();
     }
 }

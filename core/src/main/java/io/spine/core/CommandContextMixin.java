@@ -18,25 +18,20 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-dependencies {
-    api "io.spine:spine-base:$spineBaseVersion"
-    api "io.spine:spine-time:$spineTimeVersion"
+package io.spine.core;
 
-    testImplementation project(path: ":testutil-core")
-    testImplementation "io.spine:spine-testutil-time:$spineTimeVersion"
-}
+import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
 
-modelCompiler {
-    fields {
-        // Enable the strongly-typed fields generation for `spine.core.Event` as currently it's
-        // a subscribable entity state.
-        generateFor "spine.core.Event", markAs("io.spine.base.entity.EntityStateField")
+/**
+ * Mix-in interface extending {@link CommandContext}.
+ */
+@GeneratedMixin
+@Immutable
+interface CommandContextMixin extends CommandContextOrBuilder, SignalContext {
 
-        // Enable the strongly-typed fields generation for `spine.core.EventContext` to allow
-        // creation of typed event filters based on event context.
-        generateFor "spine.core.EventContext", markAs("io.spine.core.EventContextField")
+    @Override
+    default ActorContext actorContext() {
+        return getActorContext();
     }
 }
-
-apply from: deps.scripts.testArtifacts
-apply from: deps.scripts.publishProto

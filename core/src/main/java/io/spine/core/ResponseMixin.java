@@ -20,13 +20,36 @@
 
 package io.spine.core;
 
-import io.spine.annotation.Internal;
+import com.google.errorprone.annotations.Immutable;
+import io.spine.annotation.GeneratedMixin;
+import io.spine.base.Error;
 
 /**
- * An interface for the {@link MessageRejection} types which report a message being invalid.
- *
- * <p>Except the methods declared in {@link MessageRejection}, this type is a marker interface.
+ * Mixin interface for the {@link Response} objects.
  */
-@Internal
-public interface MessageInvalid extends MessageRejection {
+@GeneratedMixin
+@Immutable
+interface ResponseMixin extends ResponseOrBuilder {
+
+    /**
+     * Verifies if this response has the {@link Status.StatusCase#OK OK} status.
+     */
+    default boolean isOk() {
+        return getStatus().getStatusCase() == Status.StatusCase.OK;
+    }
+
+    /**
+     * Verifies if this response has the {@link Status.StatusCase#ERROR ERROR} status.
+     */
+    default boolean isError() {
+        return getStatus().getStatusCase() == Status.StatusCase.ERROR;
+    }
+
+    /**
+     * Obtains the error associated with the response or default instance is the response is not
+     * an error.
+     */
+    default Error error() {
+        return getStatus().getError();
+    }
 }

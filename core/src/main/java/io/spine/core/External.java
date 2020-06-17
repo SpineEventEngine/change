@@ -20,31 +20,27 @@
 
 package io.spine.core;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 /**
- * The by-field message filter.
+ * Marks a handler method parameter to be of an external origin.
  *
- * <p>This annotation should not be used directly to mark anything.
- * Instead, use the annotation instances as
- * a {@link io.spine.core.Subscribe#filter() @Subscribe.filter)} parameter.
+ * <p>External messages are messages originated in a different Bounded Context.
  *
- * @deprecated Please use please use {@link Where @Where} annotation for the first method parameter.
+ * <p>Events (including Rejections) and entity states may be external.
+ *
+ * <p>Annotate the first parameter of the handler method with {@code @External} to make the handler
+ * accept external messages. By default, any message handler accepts domestic messages.
+ *
+ * @see AcceptsExternal
  */
-@Deprecated
-@Target({})
-public @interface ByField {
-
-    /**
-     * The {@linkplain io.spine.base.FieldPath path to the field} to filter by.
-     */
-    String path();
-
-    /**
-     * The expected value of the field.
-     *
-     * <p>The value converted with help of {@link io.spine.string.Stringifier Stringifier}s into
-     * the type of the actual value of the message field.
-     */
-    String value();
+@Retention(RUNTIME)
+@Target(PARAMETER)
+@Documented
+public @interface External {
 }

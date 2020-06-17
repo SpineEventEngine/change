@@ -20,31 +20,18 @@
 
 package io.spine.core;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 /**
- * The by-field message filter.
- *
- * <p>This annotation should not be used directly to mark anything.
- * Instead, use the annotation instances as
- * a {@link io.spine.core.Subscribe#filter() @Subscribe.filter)} parameter.
- *
- * @deprecated Please use please use {@link Where @Where} annotation for the first method parameter.
+ * Marks a handler method annotation which supports filtering events by fields using {@link Where}.
  */
-@Deprecated
-@Target({})
-public @interface ByField {
-
-    /**
-     * The {@linkplain io.spine.base.FieldPath path to the field} to filter by.
-     */
-    String path();
-
-    /**
-     * The expected value of the field.
-     *
-     * <p>The value converted with help of {@link io.spine.string.Stringifier Stringifier}s into
-     * the type of the actual value of the message field.
-     */
-    String value();
+@Retention(SOURCE)
+@Target(ANNOTATION_TYPE)
+@Documented
+public @interface AcceptsFilters {
 }
