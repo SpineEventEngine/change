@@ -39,5 +39,5 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 @Retention(SOURCE)
 @Target(ANNOTATION_TYPE)
 @Documented
-public @interface AcceptsTemplate {
+public @interface AcceptsContracts {
 }
