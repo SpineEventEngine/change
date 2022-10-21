@@ -24,14 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.testing.exposeTestConfiguration
-
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.excludeProtobufLite
-import io.spine.internal.gradle.protobuf.suppressDeprecationsInKotlin
 import io.spine.internal.gradle.publish.IncrementGuard
 
 plugins {
