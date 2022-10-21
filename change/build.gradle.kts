@@ -24,15 +24,10 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.gradle.testing.exposeTestConfiguration
-
-import com.google.protobuf.gradle.generateProtoTasks
-import com.google.protobuf.gradle.protobuf
-import io.spine.internal.dependency.AutoService
 import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.excludeProtobufLite
 import io.spine.internal.gradle.protobuf.suppressDeprecationsInKotlin
 import io.spine.internal.gradle.publish.IncrementGuard
+import io.spine.protodata.gradle.plugin.LaunchProtoData
 
 plugins {
     id(io.spine.internal.dependency.Protobuf.GradlePlugin.id)
@@ -41,15 +36,59 @@ plugins {
 
 apply<IncrementGuard>()
 
-val baseVersion: String by extra
-val validationVersion: String by extra
-val baseTypesVersion: String by extra
+val spine = Spine(project)
 val timeVersion: String by extra
 
-val spine = Spine(project)
-
 dependencies {
+    protoData(spine.validation.java)
     implementation(spine.base)
     implementation(spine.validation.runtime)
     testImplementation("io.spine.tools:spine-testutil-time:$timeVersion")
+}
+
+val generatedDir:String by extra("$projectDir/generated")
+
+/**
+ * Manually add generated directories to source sets so that IDEA sees them.
+ */
+sourceSets {
+    main {
+        java.srcDir("$generatedDir/main/java")
+        kotlin.srcDir("$generatedDir/main/kotlin")
+    }
+    test {
+        java.srcDir("$generatedDir/test/java")
+        kotlin.srcDir("$generatedDir/test/kotlin")
+    }
+}
+
+/**
+ * Suppress the "legacy" validation from McJava in favour of tha based on ProtoData.
+ */
+modelCompiler.java.codegen.validation().skipValidation()
+
+protoData {
+    renderers(
+        "io.spine.validation.java.PrintValidationInsertionPoints",
+        "io.spine.validation.java.JavaValidationRenderer",
+
+        // Suppress warnings in the generated code.
+        "io.spine.protodata.codegen.java.file.PrintBeforePrimaryDeclaration",
+        "io.spine.protodata.codegen.java.suppress.SuppressRenderer"
+
+    )
+    plugins(
+        "io.spine.validation.ValidationPlugin",
+    )
+}
+
+/**
+ * Manually suppress deprecations in the generated Kotlin code until ProtoData does it.
+ */
+tasks.withType<LaunchProtoData>().forEach { task ->
+    task.doLast {
+        sourceSets.forEach { sourceSet ->
+            suppressDeprecationsInKotlin(generatedDir, sourceSet.name)
+        }
+    }
 }

@@ -64,15 +64,17 @@ buildscript {
     dependencies {
         classpath(spine.mcJavaPlugin)
     }
+
+    val jackson = io.spine.internal.dependency.Jackson
     configurations {
         all {
             resolutionStrategy {
                 force(
                     spine.base,
-                    io.spine.internal.dependency.Jackson.annotations,
-                    io.spine.internal.dependency.Jackson.bom,
-                    io.spine.internal.dependency.Jackson.databind,
-                    io.spine.internal.dependency.Jackson.moduleKotlin
+                    jackson.annotations,
+                    jackson.bom,
+                    jackson.databind,
+                    jackson.moduleKotlin
                 )
             }
         }
@@ -215,7 +217,6 @@ subprojects {
     val generatedDir:String by extra("$projectDir/generated")
 
     protobuf {
-        generatedFilesBaseDir = generatedDir
         protoc {
             // Temporarily use this version, since 3.21.x is known to provide
             // a broken `protoc-gen-js` artifact.
@@ -227,7 +228,6 @@ subprojects {
         generateProtoTasks {
             all().forEach { task ->
                 task.builtins {
-                    maybeCreate("kotlin")
                     id("js") {
                         option("library=spine-change-${project.version}")
                     }
