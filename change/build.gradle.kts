@@ -36,14 +36,13 @@ plugins {
 
 apply<IncrementGuard>()
 
-val spine = Spine(project)
-val timeVersion: String by extra
 
 dependencies {
+    val spine = Spine(project)
     protoData(spine.validation.java)
     implementation(spine.base)
     implementation(spine.validation.runtime)
-    testImplementation("io.spine.tools:spine-testutil-time:$timeVersion")
+    testImplementation(spine.testUtilTime)
 }
 
 val generatedDir:String by extra("$projectDir/generated")

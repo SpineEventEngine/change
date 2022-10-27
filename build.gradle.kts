@@ -35,6 +35,7 @@ import io.spine.internal.dependency.Dokka
 import io.spine.internal.dependency.ErrorProne
 import io.spine.internal.dependency.JUnit
 import io.spine.internal.dependency.Jackson
+import io.spine.internal.dependency.Spine
 import io.spine.internal.gradle.applyGitHubPackages
 import io.spine.internal.gradle.applyStandard
 import io.spine.internal.gradle.checkstyle.CheckStyleConfig
@@ -126,7 +127,7 @@ allprojects {
     group = "io.spine"
     version = extra["versionToPublish"]!!
 
-    val spine = io.spine.internal.dependency.Spine(project)
+    val spine = Spine(project)
     configurations {
         forceVersions()
         all {
@@ -163,7 +164,7 @@ subprojects {
         applyStandard()
     }
 
-    val spine = io.spine.internal.dependency.Spine(project)
+    val spine = Spine(project)
     dependencies {
         errorprone(ErrorProne.core)
         api(kotlin("stdlib-jdk8"))
@@ -236,8 +237,7 @@ subprojects {
         }
     }
 
-    val javadocToolsVersion: String by extra
-    updateGitHubPages(javadocToolsVersion) {
+    updateGitHubPages(Spine.DefaultVersion.javadocTools) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
     }
