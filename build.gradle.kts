@@ -55,17 +55,14 @@ import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    apply(from = "$rootDir/version.gradle.kts")
-
     io.spine.internal.gradle.doApplyStandard(repositories)
     io.spine.internal.gradle.doForceVersions(configurations)
 
-    val spine = io.spine.internal.dependency.Spine(project)
-
     dependencies {
-        classpath(spine.mcJavaPlugin)
+        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
     }
 
+    val spine = io.spine.internal.dependency.Spine(project)
     val jackson = io.spine.internal.dependency.Jackson
     configurations {
         all {
