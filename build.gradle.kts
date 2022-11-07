@@ -90,9 +90,8 @@ plugins {
     jacoco
     idea
     `project-report`
-
-    id(io.spine.internal.dependency.Protobuf.GradlePlugin.id)
-    id(io.spine.internal.dependency.ErrorProne.GradlePlugin.id)
+    protobuf
+    errorprone
 }
 
 spinePublishing {
