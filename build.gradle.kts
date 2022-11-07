@@ -51,7 +51,7 @@ import io.spine.internal.gradle.report.coverage.JacocoConfig
 import io.spine.internal.gradle.report.license.LicenseReporter
 import io.spine.internal.gradle.report.pom.PomGenerator
 import io.spine.internal.gradle.testing.configureLogging
-import io.spine.internal.gradle.test.registerTestTasks
+import io.spine.internal.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
@@ -205,6 +205,7 @@ subprojects {
     tasks {
         registerTestTasks()
         test {
+            useJUnitPlatform()
             configureLogging()
         }
     }
