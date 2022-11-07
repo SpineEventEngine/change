@@ -30,12 +30,12 @@ import io.spine.internal.gradle.publish.IncrementGuard
 import io.spine.protodata.gradle.plugin.LaunchProtoData
 
 plugins {
-    id(io.spine.internal.dependency.Protobuf.GradlePlugin.id)
-    id("io.spine.mc-java")
+    protobuf
+    id(mcJava.pluginId)
+    `detekt-code-analysis`
 }
 
 apply<IncrementGuard>()
-
 
 dependencies {
     val spine = Spine(project)
