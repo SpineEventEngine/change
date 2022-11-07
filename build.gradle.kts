@@ -131,6 +131,7 @@ allprojects {
             resolutionStrategy {
                 force(
                     spine.base,
+                    spine.validation.runtime,
                     Dokka.BasePlugin.lib,
                     Jackson.databind,
                     protocArtifact
