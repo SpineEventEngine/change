@@ -27,24 +27,20 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
 import com.google.protobuf.gradle.id
-import com.google.protobuf.gradle.protobuf
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.test.JUnit
-import io.spine.dependency.lib.KotlinPoet
-import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.Coroutines
+import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.local.ArtifactVersion
 import io.spine.dependency.local.Base
-import io.spine.dependency.local.Spine
 import io.spine.dependency.local.Logging
+import io.spine.dependency.local.ProtoData
 import io.spine.dependency.local.TestLib
 import io.spine.dependency.local.ToolBase
-import io.spine.dependency.local.ProtoData
 import io.spine.dependency.local.Validation
+import io.spine.dependency.test.JUnit
 import io.spine.gradle.applyGitHubPackages
-import io.spine.gradle.applyStandard
-import io.spine.gradle.standardToSpineSdk
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
 import io.spine.gradle.javac.configureErrorProne
@@ -56,9 +52,9 @@ import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
+import io.spine.gradle.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     standardSpineSdkRepositories()
