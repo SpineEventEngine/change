@@ -102,10 +102,9 @@ repositories {
 plugins {
     `java-library`
     kotlin("jvm")
-    jacoco
-    idea
-    `project-report`
     protobuf
+    jacoco
+    `project-report`
     errorprone
 }
 
