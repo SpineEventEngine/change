@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -26,53 +26,68 @@
 
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.google.protobuf.gradle.builtins
-import com.google.protobuf.gradle.generateProtoTasks
 import com.google.protobuf.gradle.id
 import com.google.protobuf.gradle.protobuf
-import com.google.protobuf.gradle.protoc
-import io.spine.internal.dependency.Dokka
-import io.spine.internal.dependency.ErrorProne
-import io.spine.internal.dependency.JUnit
-import io.spine.internal.dependency.Jackson
-import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.applyGitHubPackages
-import io.spine.internal.gradle.applyStandard
-import io.spine.internal.gradle.checkstyle.CheckStyleConfig
-import io.spine.internal.gradle.forceVersions
-import io.spine.internal.gradle.github.pages.updateGitHubPages
-import io.spine.internal.gradle.javac.configureErrorProne
-import io.spine.internal.gradle.javac.configureJavac
-import io.spine.internal.gradle.javadoc.JavadocConfig
-import io.spine.internal.gradle.kotlin.setFreeCompilerArgs
-import io.spine.internal.gradle.publish.PublishingRepos
-import io.spine.internal.gradle.publish.spinePublishing
-import io.spine.internal.gradle.report.coverage.JacocoConfig
-import io.spine.internal.gradle.report.license.LicenseReporter
-import io.spine.internal.gradle.report.pom.PomGenerator
-import io.spine.internal.gradle.testing.configureLogging
-import io.spine.internal.gradle.testing.registerTestTasks
+import io.spine.dependency.build.Dokka
+import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.test.JUnit
+import io.spine.dependency.lib.KotlinPoet
+import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.Coroutines
+import io.spine.dependency.local.ArtifactVersion
+import io.spine.dependency.local.Base
+import io.spine.dependency.local.Spine
+import io.spine.dependency.local.Logging
+import io.spine.dependency.local.TestLib
+import io.spine.dependency.local.ToolBase
+import io.spine.dependency.local.ProtoData
+import io.spine.dependency.local.Validation
+import io.spine.gradle.applyGitHubPackages
+import io.spine.gradle.applyStandard
+import io.spine.gradle.standardToSpineSdk
+import io.spine.gradle.checkstyle.CheckStyleConfig
+import io.spine.gradle.github.pages.updateGitHubPages
+import io.spine.gradle.javac.configureErrorProne
+import io.spine.gradle.javac.configureJavac
+import io.spine.gradle.javadoc.JavadocConfig
+import io.spine.gradle.kotlin.setFreeCompilerArgs
+import io.spine.gradle.publish.PublishingRepos
+import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.report.coverage.JacocoConfig
+import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.report.pom.PomGenerator
+import io.spine.gradle.testing.configureLogging
+import io.spine.gradle.testing.registerTestTasks
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    io.spine.internal.gradle.doApplyStandard(repositories)
-    io.spine.internal.gradle.doForceVersions(configurations)
+    standardSpineSdkRepositories()
+    doForceVersions(configurations)
 
     dependencies {
-        classpath(io.spine.internal.dependency.Spine.McJava.pluginLib)
+        classpath(io.spine.dependency.local.McJava.pluginLib)
     }
 
-    val spine = io.spine.internal.dependency.Spine(project)
-    val jackson = io.spine.internal.dependency.Jackson
+    val jackson = io.spine.dependency.lib.Jackson
+    val coroutiners = io.spine.dependency.lib.Coroutines
+    val validation = io.spine.dependency.local.Validation
+    val logging = io.spine.dependency.local.Logging
+    val base = io.spine.dependency.local.Base
     configurations {
         all {
             resolutionStrategy {
                 force(
-                    spine.base,
                     jackson.annotations,
                     jackson.bom,
                     jackson.databind,
-                    jackson.moduleKotlin
+                    jackson.moduleKotlin,
+                    base.lib,
+                    validation.runtime,
+                    logging.lib,
+                    coroutiners.bom,
+                    coroutiners.core,
+                    coroutiners.coreJvm,
+                    coroutiners.jdk8,
                 )
             }
         }
@@ -81,7 +96,7 @@ buildscript {
 
 repositories {
     // Required to grab the dependencies for `JacocoConfig`.
-    applyStandard()
+    standardToSpineSdk()
 }
 
 plugins {
@@ -101,13 +116,13 @@ spinePublishing {
     destinations = with(PublishingRepos) {
         setOf(
             gitHub("change"),
-            cloudRepo,
             cloudArtifactRegistry
         )
     }
 
     dokkaJar {
-        enabled = true
+        kotlin = true
+        java = true
     }
 }
 
@@ -123,15 +138,22 @@ allprojects {
     group = "io.spine"
     version = extra["versionToPublish"]!!
 
-    val spine = Spine(project)
     configurations {
         forceVersions()
         all {
             exclude("io.spine:spine-validate")
             resolutionStrategy {
                 force(
-                    spine.base,
-                    spine.validation.runtime,
+                    KotlinPoet.lib,
+                    ToolBase.lib,
+                    Coroutines.bom,
+                    Coroutines.core,
+                    Coroutines.coreJvm,
+                    Coroutines.jdk8,
+                    Base.lib,
+                    ProtoData.api,
+                    Validation.runtime,
+                    Logging.lib,
                     Dokka.BasePlugin.lib,
                     Jackson.databind,
                     protocArtifact
@@ -158,19 +180,17 @@ subprojects {
 
     repositories {
         applyGitHubPackages("base", project)
-        applyStandard()
+        standardToSpineSdk()
     }
 
-    val spine = Spine(project)
     dependencies {
         errorprone(ErrorProne.core)
-        api(kotlin("stdlib-jdk8"))
 
-        testImplementation(spine.testlib)
+        testImplementation(TestLib.lib)
         testImplementation(JUnit.runner)
     }
 
-    val javaVersion = JavaVersion.VERSION_11
+    val javaVersion = JavaVersion.VERSION_17
 
     java {
         sourceCompatibility = javaVersion
@@ -189,12 +209,9 @@ subprojects {
 
     kotlin {
         explicitApi()
-
-        tasks {
-            withType<KotlinCompile>().configureEach {
-                kotlinOptions.jvmTarget = javaVersion.toString()
-                setFreeCompilerArgs()
-            }
+        compilerOptions {
+            jvmTarget.set(BuildSettings.jvmTarget)
+            setFreeCompilerArgs()
         }
     }
 
@@ -232,27 +249,9 @@ subprojects {
         }
     }
 
-    updateGitHubPages(Spine.DefaultVersion.javadocTools) {
+    updateGitHubPages(ArtifactVersion.javadocTools) {
         allowInternalJavadoc.set(true)
         rootFolder.set(rootDir)
-    }
-
-    // Apply the same IDEA module configuration for each of subprojects.
-    idea {
-        module {
-            with(generatedSourceDirs) {
-                add(file("$generatedDir/main/js"))
-                add(file("$generatedDir/main/java"))
-                add(file("$generatedDir/main/kotlin"))
-                add(file("$generatedDir/main/spine"))
-            }
-            testSources.from(
-                file("$generatedDir/test/java"),
-                file("$generatedDir/test/kotlin")
-            )
-            isDownloadJavadoc = true
-            isDownloadSources = true
-        }
     }
 
     project.configureTaskDependencies()
