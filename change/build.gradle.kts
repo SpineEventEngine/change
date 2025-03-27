@@ -1,11 +1,11 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2025, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * https://www.apache.org/licenses/LICENSE-2.0
  *
  * Redistribution and use in source and/or binary forms, with or without
  * modification, must retain the above copyright notice and the following
@@ -24,9 +24,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.internal.dependency.Spine
-import io.spine.internal.gradle.protobuf.suppressDeprecationsInKotlin
-import io.spine.internal.gradle.publish.IncrementGuard
+import io.spine.dependency.local.Base
+import io.spine.dependency.local.Spine
+import io.spine.dependency.local.Time
+import io.spine.dependency.local.Validation
+import io.spine.gradle.publish.IncrementGuard
 import io.spine.protodata.gradle.plugin.LaunchProtoData
 
 plugins {
@@ -38,56 +40,7 @@ plugins {
 apply<IncrementGuard>()
 
 dependencies {
-    val spine = Spine(project)
-    protoData(spine.validation.java)
-    implementation(spine.base)
-    implementation(spine.validation.runtime)
-    testImplementation(spine.testUtilTime)
-}
-
-val generatedDir:String by extra("$projectDir/generated")
-
-/**
- * Manually add generated directories to source sets so that IDEA sees them.
- */
-sourceSets {
-    main {
-        java.srcDir("$generatedDir/main/java")
-        kotlin.srcDir("$generatedDir/main/kotlin")
-    }
-    test {
-        java.srcDir("$generatedDir/test/java")
-        kotlin.srcDir("$generatedDir/test/kotlin")
-    }
-}
-
-/**
- * Suppress the "legacy" validation from McJava in favour of tha based on ProtoData.
- */
-modelCompiler.java.codegen.validation().skipValidation()
-
-protoData {
-    renderers(
-        "io.spine.validation.java.PrintValidationInsertionPoints",
-        "io.spine.validation.java.JavaValidationRenderer",
-
-        // Suppress warnings in the generated code.
-        "io.spine.protodata.codegen.java.file.PrintBeforePrimaryDeclaration",
-        "io.spine.protodata.codegen.java.suppress.SuppressRenderer"
-
-    )
-    plugins(
-        "io.spine.validation.ValidationPlugin",
-    )
-}
-
-/**
- * Manually suppress deprecations in the generated Kotlin code until ProtoData does it.
- */
-tasks.withType<LaunchProtoData>().forEach { task ->
-    task.doLast {
-        sourceSets.forEach { sourceSet ->
-            suppressDeprecationsInKotlin(generatedDir, sourceSet.name)
-        }
-    }
+    implementation(Base.lib)
+    implementation(Validation.runtime)
+    testImplementation(Time.testLib)
 }
