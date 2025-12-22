@@ -24,65 +24,57 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import BuildSettings.javaVersion
+import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.CheckerFramework
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.build.JSpecify
 import io.spine.dependency.lib.Guava
-import io.spine.dependency.lib.JavaX
 import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Reflect
-import io.spine.dependency.local.TestLib
-import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Jacoco
-import io.spine.dependency.test.Kotest
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
 import io.spine.gradle.javac.configureErrorProne
 import io.spine.gradle.javac.configureJavac
 import io.spine.gradle.javadoc.JavadocConfig
-import io.spine.gradle.kotlin.applyJvmToolchain
 import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.report.license.LicenseReporter
-import io.spine.gradle.testing.configureLogging
-import io.spine.gradle.testing.registerTestTasks
 
 plugins {
     `java-library`
     id("net.ltgt.errorprone")
     id("pmd-settings")
     id("project-report")
-    id("dokka-for-java")
     kotlin("jvm")
-    id("io.kotest")
-    id("org.jetbrains.kotlinx.kover")
     id("detekt-code-analysis")
-    id("dokka-for-kotlin")
+    id("dokka-setup")
+    id("org.jetbrains.kotlinx.kover")
+    id("module-testing")
 }
-
+apply<BomsPlugin>()
 LicenseReporter.generateReportIn(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)
 
 project.run {
-    configureJava(javaVersion)
-    configureKotlin(javaVersion)
+    configureJava()
+    configureKotlin()
     addDependencies()
     forceConfigurations()
 
     val generatedDir = "$projectDir/generated"
     setTaskDependencies(generatedDir)
-    setupTests()
 
     configureGitHubPages()
 }
 
 typealias Module = Project
 
-fun Module.configureJava(javaVersion: JavaLanguageVersion) {
+fun Module.configureJava() {
     java {
-        toolchain.languageVersion.set(javaVersion)
+        sourceCompatibility = BuildSettings.javaVersionCompat
+        targetCompatibility = BuildSettings.javaVersionCompat
     }
 
     tasks {
@@ -93,9 +85,8 @@ fun Module.configureJava(javaVersion: JavaLanguageVersion) {
     }
 }
 
-fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
+fun Module.configureKotlin() {
     kotlin {
-        applyJvmToolchain(javaVersion.asInt())
         explicitApi()
         compilerOptions {
             jvmTarget.set(BuildSettings.jvmTarget)
@@ -105,12 +96,11 @@ fun Module.configureKotlin(javaVersion: JavaLanguageVersion) {
 
     kover {
         useJacoco(version = Jacoco.version)
-    }
-
-    koverReport {
-        defaults {
-            xml {
-                onCheck = true
+        reports {
+            total {
+                xml {
+                    onCheck = true
+                }
             }
         }
     }
@@ -130,21 +120,8 @@ fun Module.addDependencies() = dependencies {
     api(Guava.lib)
 
     compileOnlyApi(CheckerFramework.annotations)
-    compileOnlyApi(JavaX.annotations)
+    api(JSpecify.annotations)
     ErrorProne.annotations.forEach { compileOnlyApi(it) }
-
-    implementation(Logging.lib)
-
-    testImplementation(Guava.testLib)
-    testImplementation(JUnit.runner)
-    testImplementation(JUnit.pioneer)
-    JUnit.api.forEach { testImplementation(it) }
-
-    testImplementation(TestLib.lib)
-    testImplementation(Kotest.frameworkEngine)
-    testImplementation(Kotest.datatest)
-    testImplementation(Kotest.runnerJUnit5Jvm)
-    testImplementation(JUnit.runner)
 }
 
 fun Module.forceConfigurations() {
@@ -154,24 +131,10 @@ fun Module.forceConfigurations() {
         all {
             resolutionStrategy {
                 force(
-                    JUnit.bom,
-                    JUnit.runner,
                     Dokka.BasePlugin.lib,
                     Reflect.lib,
                 )
             }
-        }
-    }
-}
-
-fun Module.setupTests() {
-    tasks {
-        registerTestTasks()
-        test.configure {
-            useJUnitPlatform {
-                includeEngines("junit-jupiter")
-            }
-            configureLogging()
         }
     }
 }
@@ -196,9 +159,7 @@ fun Module.setTaskDependencies(generatedDir: String) {
 }
 
 fun Module.configureGitHubPages() {
-    val docletVersion = project.version.toString()
-    updateGitHubPages(docletVersion) {
-        allowInternalJavadoc.set(true)
+    updateGitHubPages {
         rootFolder.set(rootDir)
     }
 }
