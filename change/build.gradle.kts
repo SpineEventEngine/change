@@ -25,15 +25,13 @@
  */
 
 import io.spine.dependency.local.Base
-import io.spine.dependency.local.Spine
 import io.spine.dependency.local.Time
 import io.spine.dependency.local.Validation
 import io.spine.gradle.publish.IncrementGuard
-import io.spine.protodata.gradle.plugin.LaunchProtoData
 
 plugins {
     protobuf
-    id(mcJava.pluginId)
+    id(coreJvmCompiler.pluginId)
     `detekt-code-analysis`
 }
 

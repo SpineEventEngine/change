@@ -29,18 +29,17 @@
 import com.google.protobuf.gradle.id
 import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.lib.Coroutines
+import io.spine.dependency.kotlinx.Coroutines
+import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.KotlinPoet
-import io.spine.dependency.local.ArtifactVersion
 import io.spine.dependency.local.Base
+import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.ProtoData
-import io.spine.dependency.local.TestLib
 import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
-import io.spine.dependency.test.JUnit
-import io.spine.gradle.applyGitHubPackages
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
 import io.spine.gradle.javac.configureErrorProne
@@ -48,11 +47,12 @@ import io.spine.gradle.javac.configureJavac
 import io.spine.gradle.javadoc.JavadocConfig
 import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.PublishingRepos
+import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
-import io.spine.gradle.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
 
@@ -61,29 +61,36 @@ buildscript {
     doForceVersions(configurations)
 
     dependencies {
-        classpath(io.spine.dependency.local.McJava.pluginLib)
+        classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
+        classpath(io.spine.dependency.local.Compiler.pluginLib)
+        classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
     }
 
-    val jackson = io.spine.dependency.lib.Jackson
-    val coroutiners = io.spine.dependency.lib.Coroutines
     val validation = io.spine.dependency.local.Validation
     val logging = io.spine.dependency.local.Logging
     val base = io.spine.dependency.local.Base
     configurations {
         all {
             resolutionStrategy {
+                val jackson = io.spine.dependency.lib.Jackson
+                val cfg = this@all
+                val rs = this@resolutionStrategy
+                jackson.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
+
+                io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
+
                 force(
+                    io.spine.dependency.lib.Kotlin.bom,
+                    io.spine.dependency.lib.Grpc.bom,
                     jackson.annotations,
-                    jackson.bom,
-                    jackson.databind,
-                    jackson.moduleKotlin,
+                    base.annotations,
                     base.lib,
                     validation.runtime,
+                    validation.oldRuntime,
                     logging.lib,
-                    coroutiners.bom,
-                    coroutiners.core,
-                    coroutiners.coreJvm,
-                    coroutiners.jdk8,
+                    io.spine.dependency.local.Time.lib,
+                    io.spine.dependency.local.Time.javaExtensions,
                 )
             }
         }
@@ -114,11 +121,6 @@ spinePublishing {
             cloudArtifactRegistry
         )
     }
-
-    dokkaJar {
-        kotlin = true
-        java = true
-    }
 }
 
 // Temporarily use this version, since 3.21.x is known to provide
@@ -138,19 +140,29 @@ allprojects {
         all {
             exclude("io.spine:spine-validate")
             resolutionStrategy {
+                val cfg = this@all
+                val rs = this@resolutionStrategy
+                Kotlin.StdLib.forceArtifacts(project, cfg, rs)
+                Kotlin.forceArtifacts(project, cfg, rs)
+                Coroutines.forceArtifacts(project, cfg, rs)
+                Jackson.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Jackson.DataType.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Jackson.DataFormat.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Grpc.forceArtifacts(project, this@all, this@resolutionStrategy)
                 force(
+                    Jackson.annotations,
+                    Jackson.bom,
+                    Grpc.bom,
+                    Kotlin.bom,
                     KotlinPoet.lib,
                     ToolBase.lib,
-                    Coroutines.bom,
-                    Coroutines.core,
-                    Coroutines.coreJvm,
-                    Coroutines.jdk8,
                     Base.lib,
-                    ProtoData.api,
+                    Base.annotations,
                     Validation.runtime,
+                    Validation.oldRuntime,
+                    Validation.javaBundle,
                     Logging.lib,
-                    Dokka.BasePlugin.lib,
-                    Jackson.databind,
+                    CoreJvm.server,
                     protocArtifact
                 )
             }
@@ -170,19 +182,17 @@ subprojects {
         plugin("idea")
         plugin("pmd-settings")
         plugin("jacoco")
-        plugin("dokka-for-java")
+        plugin("module-testing")
+        plugin("dokka-setup")
     }
 
     repositories {
-        applyGitHubPackages("base", project)
+        gitHub("change")
         standardToSpineSdk()
     }
 
     dependencies {
         errorprone(ErrorProne.core)
-
-        testImplementation(TestLib.lib)
-        testImplementation(JUnit.runner)
     }
 
     val javaVersion = JavaVersion.VERSION_17
@@ -214,16 +224,6 @@ subprojects {
     JavadocConfig.applyTo(project)
     CheckStyleConfig.applyTo(project)
 
-    tasks {
-        registerTestTasks()
-        test {
-            useJUnitPlatform()
-            configureLogging()
-        }
-    }
-
-    val generatedDir:String by extra("$projectDir/generated")
-
     protobuf {
         protoc {
             // Temporarily use this version, since 3.21.x is known to provide
@@ -244,8 +244,7 @@ subprojects {
         }
     }
 
-    updateGitHubPages(ArtifactVersion.javadocTools) {
-        allowInternalJavadoc.set(true)
+    updateGitHubPages() {
         rootFolder.set(rootDir)
     }
 

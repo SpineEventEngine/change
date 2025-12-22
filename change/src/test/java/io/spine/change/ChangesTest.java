@@ -31,7 +31,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.testing.UtilityClassTest;
-import io.spine.time.testing.Past;
+import io.spine.testing.time.Past;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
