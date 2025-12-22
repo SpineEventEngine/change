@@ -147,9 +147,11 @@ allprojects {
                 Coroutines.forceArtifacts(project, cfg, rs)
                 Jackson.forceArtifacts(project, this@all, this@resolutionStrategy)
                 Jackson.DataType.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Jackson.DataFormat.forceArtifacts(project, this@all, this@resolutionStrategy)
                 Grpc.forceArtifacts(project, this@all, this@resolutionStrategy)
                 force(
                     Jackson.annotations,
+                    Jackson.bom,
                     Grpc.bom,
                     Kotlin.bom,
                     KotlinPoet.lib,
