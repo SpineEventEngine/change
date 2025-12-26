@@ -46,7 +46,6 @@ import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.license.LicenseReporter
 
-
 plugins {
     `java-library`
     kotlin("jvm")
