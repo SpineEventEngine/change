@@ -45,6 +45,7 @@ import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.license.LicenseReporter
+import org.gradle.jvm.tasks.Jar
 
 plugins {
     `java-library`
@@ -83,7 +84,7 @@ java {
             configureJavac()
             configureErrorProne()
         }
-        withType<org.gradle.jvm.tasks.Jar>().configureEach {
+        withType<Jar>().configureEach {
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
     }
