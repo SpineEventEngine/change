@@ -33,6 +33,7 @@ import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.local.Logging
 import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
 import io.spine.gradle.checkstyle.CheckStyleConfig
@@ -120,18 +121,18 @@ private fun Project.forceDependencies() {
                 Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 Grpc.forceArtifacts(project, cfg, rs)
                 force(
-                    Protobuf.javaLib,
                     Jackson.annotations,
                     Jackson.bom,
                     Grpc.bom,
                     Kotlin.bom,
                     KotlinPoet.lib,
+                    Protobuf.javaLib,
                     ToolBase.lib,
                     Base.lib,
                     Base.annotations,
                     Validation.runtime,
                     Validation.javaBundle,
-                    io.spine.dependency.local.Logging.lib,
+                    Logging.lib,
                     CoreJvm.server,
                     Protobuf.compiler
                 )
