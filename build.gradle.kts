@@ -27,17 +27,16 @@
 @file:Suppress("RemoveRedundantQualifierName")
 
 import com.google.protobuf.gradle.id
-import io.spine.dependency.build.Dokka
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.kotlinx.Coroutines
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.KotlinPoet
+import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Logging
-import io.spine.dependency.local.ProtoData
 import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
 import io.spine.gradle.checkstyle.CheckStyleConfig
@@ -53,8 +52,6 @@ import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
-import io.spine.gradle.testing.configureLogging
-import io.spine.gradle.testing.registerTestTasks
 
 buildscript {
     standardSpineSdkRepositories()
@@ -87,7 +84,6 @@ buildscript {
                     base.annotations,
                     base.lib,
                     validation.runtime,
-                    validation.oldRuntime,
                     logging.lib,
                     io.spine.dependency.local.Time.lib,
                     io.spine.dependency.local.Time.javaExtensions,
@@ -123,12 +119,6 @@ spinePublishing {
     }
 }
 
-// Temporarily use this version, since 3.21.x is known to provide
-// a broken `protoc-gen-js` artifact and Kotlin code without access modifiers.
-// See https://github.com/protocolbuffers/protobuf-javascript/issues/127.
-//     https://github.com/protocolbuffers/protobuf/issues/10593
-val protocArtifact = "com.google.protobuf:protoc:3.19.6"
-
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
 
@@ -145,11 +135,12 @@ allprojects {
                 Kotlin.StdLib.forceArtifacts(project, cfg, rs)
                 Kotlin.forceArtifacts(project, cfg, rs)
                 Coroutines.forceArtifacts(project, cfg, rs)
-                Jackson.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Jackson.DataType.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Jackson.DataFormat.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Grpc.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Jackson.forceArtifacts(project, cfg, rs)
+                Jackson.DataType.forceArtifacts(project, cfg, rs)
+                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                Grpc.forceArtifacts(project, cfg, rs)
                 force(
+                    Protobuf.javaLib,
                     Jackson.annotations,
                     Jackson.bom,
                     Grpc.bom,
@@ -159,11 +150,10 @@ allprojects {
                     Base.lib,
                     Base.annotations,
                     Validation.runtime,
-                    Validation.oldRuntime,
                     Validation.javaBundle,
                     Logging.lib,
                     CoreJvm.server,
-                    protocArtifact
+                    Protobuf.compiler
                 )
             }
         }
@@ -223,26 +213,6 @@ subprojects {
     LicenseReporter.generateReportIn(project)
     JavadocConfig.applyTo(project)
     CheckStyleConfig.applyTo(project)
-
-    protobuf {
-        protoc {
-            // Temporarily use this version, since 3.21.x is known to provide
-            // a broken `protoc-gen-js` artifact.
-            // See https://github.com/protocolbuffers/protobuf-javascript/issues/127.
-            //
-            // Once it is addressed, this artifact should be `Protobuf.compiler`.
-            artifact = protocArtifact
-        }
-        generateProtoTasks {
-            all().forEach { task ->
-                task.builtins {
-                    id("js") {
-                        option("library=spine-change-${project.version}")
-                    }
-                }
-            }
-        }
-    }
 
     updateGitHubPages() {
         rootFolder.set(rootDir)
