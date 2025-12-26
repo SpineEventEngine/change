@@ -26,27 +26,7 @@
 
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.google.protobuf.gradle.id
-import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.kotlinx.Coroutines
-import io.spine.dependency.lib.Grpc
-import io.spine.dependency.lib.Jackson
-import io.spine.dependency.lib.Kotlin
-import io.spine.dependency.lib.KotlinPoet
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.local.Base
-import io.spine.dependency.local.CoreJvm
-import io.spine.dependency.local.Logging
-import io.spine.dependency.local.ToolBase
-import io.spine.dependency.local.Validation
-import io.spine.gradle.checkstyle.CheckStyleConfig
-import io.spine.gradle.github.pages.updateGitHubPages
-import io.spine.gradle.javac.configureErrorProne
-import io.spine.gradle.javac.configureJavac
-import io.spine.gradle.javadoc.JavadocConfig
-import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.PublishingRepos
-import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.coverage.JacocoConfig
@@ -121,104 +101,8 @@ spinePublishing {
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-
     group = "io.spine"
     version = extra["versionToPublish"]!!
-
-    configurations {
-        forceVersions()
-        all {
-            exclude("io.spine:spine-validate")
-            resolutionStrategy {
-                val cfg = this@all
-                val rs = this@resolutionStrategy
-                Kotlin.StdLib.forceArtifacts(project, cfg, rs)
-                Kotlin.forceArtifacts(project, cfg, rs)
-                Coroutines.forceArtifacts(project, cfg, rs)
-                Jackson.forceArtifacts(project, cfg, rs)
-                Jackson.DataType.forceArtifacts(project, cfg, rs)
-                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
-                Grpc.forceArtifacts(project, cfg, rs)
-                force(
-                    Protobuf.javaLib,
-                    Jackson.annotations,
-                    Jackson.bom,
-                    Grpc.bom,
-                    Kotlin.bom,
-                    KotlinPoet.lib,
-                    ToolBase.lib,
-                    Base.lib,
-                    Base.annotations,
-                    Validation.runtime,
-                    Validation.javaBundle,
-                    Logging.lib,
-                    CoreJvm.server,
-                    Protobuf.compiler
-                )
-            }
-        }
-    }
-}
-
-subprojects {
-
-    apply {
-        plugin("java-library")
-        plugin("kotlin")
-        plugin("com.google.protobuf")
-        plugin("net.ltgt.errorprone")
-        plugin("pmd")
-        plugin("checkstyle")
-        plugin("idea")
-        plugin("pmd-settings")
-        plugin("jacoco")
-        plugin("module-testing")
-        plugin("dokka-setup")
-    }
-
-    repositories {
-        gitHub("change")
-        standardToSpineSdk()
-    }
-
-    dependencies {
-        errorprone(ErrorProne.core)
-    }
-
-    val javaVersion = JavaVersion.VERSION_17
-
-    java {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-
-        tasks {
-            withType<JavaCompile>().configureEach {
-                configureJavac()
-                configureErrorProne()
-            }
-            withType<org.gradle.jvm.tasks.Jar>().configureEach {
-                duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            }
-        }
-    }
-
-    kotlin {
-        explicitApi()
-        compilerOptions {
-            jvmTarget.set(BuildSettings.jvmTarget)
-            setFreeCompilerArgs()
-        }
-    }
-
-    LicenseReporter.generateReportIn(project)
-    JavadocConfig.applyTo(project)
-    CheckStyleConfig.applyTo(project)
-
-    updateGitHubPages() {
-        rootFolder.set(rootDir)
-    }
-
-    project.configureTaskDependencies()
 }
 
 LicenseReporter.mergeAllReports(project)

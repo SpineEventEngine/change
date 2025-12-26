@@ -30,7 +30,7 @@ import io.spine.dependency.local.Validation
 import io.spine.gradle.publish.IncrementGuard
 
 plugins {
-    protobuf
+    module
     id(coreJvmCompiler.pluginId)
     `detekt-code-analysis`
 }
