@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,44 +24,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import io.spine.gradle.buildDirectory
-
-plugins {
-    jacoco
-}
+package io.spine.gradle
 
 /**
- * Configures [JacocoReport] task to run in a Kotlin Multiplatform project for
- * `commonMain` and `jvmMain` source sets.
+ * The Gradle task group used by every custom task registered or
+ * configured by Spine SDK code.
  *
- * This script plugin must be applied using the following construct at the end of
- * a `build.gradle.kts` file of a module:
+ * Setting `group = SpineTaskGroup.name` on every Spine-specific task
+ * keeps them listed together under `spine` in `./gradlew tasks` and
+ * in the IntelliJ IDEA Gradle tool window. See
+ * `.agents/skills/gradle-review/spine-task-conventions.md` in the
+ * `config` repository for the full convention and rationale.
  *
- * ```kotlin
- * apply(plugin="jacoco-kotlin-jvm")
+ * Example:
  * ```
- * Please do not apply this script plugin in the `plugins {}` block because `jacocoTestReport`
- * task is not yet available at this stage.
+ * tasks.register("generateSpineModel") {
+ *     group = SpineTaskGroup.name
+ *     description = "Generates Spine model classes from .proto definitions"
+ * }
+ * ```
  */
-@Suppress("unused")
-private val about = ""
-
-/**
- * Configure Jacoco task with custom input from this Kotlin Multiplatform project.
- */
-@Suppress("unused")
-val jacocoTestReport: JacocoReport by tasks.getting(JacocoReport::class) {
-
-    val classFiles = File("$buildDirectory/classes/kotlin/jvm/")
-        .walkBottomUp()
-        .toSet()
-    classDirectories.setFrom(classFiles)
-
-    val coverageSourceDirs = arrayOf(
-        "src/commonMain",
-        "src/jvmMain"
-    )
-    sourceDirectories.setFrom(files(coverageSourceDirs))
-
-    executionData.setFrom(files("$buildDirectory/jacoco/jvmTest.exec"))
+object SpineTaskGroup {
+    const val name = "spine"
 }
