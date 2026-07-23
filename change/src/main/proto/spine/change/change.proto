@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ import "google/protobuf/timestamp.proto";
 // The `Change` messages can be used as a request to change a value (e.g. as a field of a command),
 // or as information on the change made (e.g. as a part of an event).
 //
-// For all types the following rule applies: `new_value` field must not be equal to `previous_value`.
+// For all types the following rule applies: `new_value` field must not be
+// equal to `previous_value`.
 //
 
 // A change in a string field.

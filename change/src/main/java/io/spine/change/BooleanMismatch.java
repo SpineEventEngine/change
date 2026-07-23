@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public final class BooleanMismatch {
     }
 
     /**
-     * Creates a {@code ValueMismatch} for the case when command finds false value instead of true.
+     * Creates a {@code ValueMismatch} for the case when a command finds a false value instead of true.
      *
      * @param version the version of the entity in which the mismatch is discovered
      * @return new {@code ValueMismatch} instance
@@ -53,7 +53,7 @@ public final class BooleanMismatch {
     }
 
     /**
-     * Creates a {@code ValueMismatch} for the case when command finds true value instead of false.
+     * Creates a {@code ValueMismatch} for the case when a command finds a true value instead of false.
      *
      * @param version the version of the entity in which the mismatch is discovered
      * @return new {@code ValueMismatch} instance
