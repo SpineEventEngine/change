@@ -38,10 +38,10 @@ import "google/protobuf/timestamp.proto";
 
 //
 // This file provides messages that define changes of fields in other messages.
-// The `Change` messages can be use as a request to change a value (e.g. as a field of a command),
+// The `Change` messages can be used as a request to change a value (e.g. as a field of a command),
 // or as information on the change made (e.g. as a part of an event).
 //
-// For all types the following rule apply: `new_value` field must not be equal to `previous_value`.
+// For all types the following rule applies: `new_value` field must not be equal to `previous_value`.
 //
 
 // A change in a string field.

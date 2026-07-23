@@ -37,12 +37,12 @@ option java_package = "io.spine.change";
 import "google/protobuf/any.proto";
 
 // Attributes for a command rejection because an entity contains a value different than
-// expected in the command which rejects the value change.
+// expected in the command that rejects the value change.
 message ValueMismatch {
 
     option (required_field) = "expected|actual";
 
-    // The value which a command expected in an entity field.
+    // The value that a command expected in an entity field.
     //
     // This field is not populated if the command expects to initialize the attribute.
     //
@@ -54,9 +54,9 @@ message ValueMismatch {
     //
     google.protobuf.Any actual = 2;
 
-    // The value which a command could have set if expected value was discovered in the entity.
+    // The value that a command could have set if the expected value was discovered in the entity.
     google.protobuf.Any new_value = 3;
 
-    // The version of the entity which generated the rejection.
+    // The version of the entity that generated the rejection.
     int32 version = 4;
 }

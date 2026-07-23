@@ -9,7 +9,7 @@
                                                                       
 ## Treating nullability
 
-* Use nullable Kotlin type only if the type in Java is annotated as `@Nullable`.
+* Use a nullable Kotlin type only if the type in Java is annotated as `@Nullable`.
 
 ## Efficient Conversion Workflow
 

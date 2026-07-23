@@ -44,7 +44,7 @@ public final class IntMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering not zero value,
+     * Creates a {@code ValueMismatch} for the case of discovering not zero value,
      * when a zero amount was expected by a command.
      *
      * @param actual   the value discovered instead of zero
@@ -57,7 +57,7 @@ public final class IntMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering zero value,
+     * Creates a {@code ValueMismatch} for the case of discovering zero value,
      * when a non zero amount was expected by a command.
      *
      * @param expected the value of the field that the command wanted to clear
@@ -70,8 +70,8 @@ public final class IntMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a value
-     * different than by a command.
+     * Creates a {@code ValueMismatch} for the case of discovering a value
+     * different than expected by a command.
      *
      * @param expected the value expected by the command
      * @param actual   the value discovered instead of the expected string
@@ -104,9 +104,9 @@ public final class IntMismatch {
     }
 
     /**
-     * Obtains expected int value from the passed mismatch.
+     * Obtains the expected int value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-int values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-int values
      */
     public static int unpackExpected(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -115,9 +115,9 @@ public final class IntMismatch {
     }
 
     /**
-     * Obtains actual int value from the passed mismatch.
+     * Obtains the actual int value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-int values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-int values
      */
     public static int unpackActual(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -126,9 +126,9 @@ public final class IntMismatch {
     }
 
     /**
-     * Obtains new int value from the passed mismatch.
+     * Obtains the new int value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-int values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-int values
      */
     public static int unpackNewValue(ValueMismatch mismatch) {
         checkNotNull(mismatch);

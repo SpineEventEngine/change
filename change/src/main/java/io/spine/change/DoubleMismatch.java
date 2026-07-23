@@ -44,7 +44,7 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering not zero value,
+     * Creates a {@code ValueMismatch} for the case of discovering not zero value,
      * when a zero amount was expected by a command.
      *
      * @param actual   the value discovered instead of zero
@@ -57,7 +57,7 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering zero value,
+     * Creates a {@code ValueMismatch} for the case of discovering zero value,
      * when a non zero amount was expected by a command.
      *
      * @param expected the value of the field that the command wanted to clear
@@ -70,8 +70,8 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a value
-     * different than by a command.
+     * Creates a {@code ValueMismatch} for the case of discovering a value
+     * different than expected by a command.
      *
      * @param expected the value expected by the command
      * @param actual   the value discovered instead of the expected string
@@ -104,9 +104,9 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Obtains expected double value from the passed mismatch.
+     * Obtains the expected double value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-double values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-double values
      */
     public static double unpackExpected(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -115,9 +115,9 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Obtains actual double value from the passed mismatch.
+     * Obtains the actual double value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-double values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-double values
      */
     public static double unpackActual(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -126,9 +126,9 @@ public final class DoubleMismatch {
     }
 
     /**
-     * Obtains new double value from the passed mismatch.
+     * Obtains the new double value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-double values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-double values
      */
     public static double unpackNewValue(ValueMismatch mismatch) {
         checkNotNull(mismatch);
