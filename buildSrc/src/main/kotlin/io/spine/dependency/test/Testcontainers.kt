@@ -24,21 +24,40 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+package io.spine.dependency.test
 
 /**
- * gRPC-Kotlin/JVM.
+ * Testcontainers for Java — provides throwaway, lightweight instances of databases and other
+ * services running in Docker containers.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * The modules below are versioned and released together, so a single [version] applies to all
+ * of them.
+ *
+ * @see <a href="https://github.com/testcontainers/testcontainers-java">
+ *     Testcontainers for Java at GitHub</a>
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
+@Suppress("unused", "ConstPropertyName")
+object Testcontainers {
+    private const val version = "1.21.4"
+    private const val group = "org.testcontainers"
 
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+    /**
+     * The core Testcontainers library.
+     */
+    const val lib = "$group:testcontainers:$version"
+
+    /**
+     * The JUnit 5 (Jupiter) integration.
+     */
+    const val junitJupiter = "$group:junit-jupiter:$version"
+
+    /**
+     * The Google Cloud (GCP) emulator container support.
+     */
+    const val gcloud = "$group:gcloud:$version"
+
+    /**
+     * The MySQL container support.
+     */
+    const val mySql = "$group:mysql:$version"
 }

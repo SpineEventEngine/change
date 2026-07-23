@@ -24,21 +24,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+package io.spine.dependency.storage
 
 /**
- * gRPC-Kotlin/JVM.
+ * HikariCP — a fast, lightweight JDBC connection pool.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * The JDBC storage uses it to pool database connections.
+ *
+ * @see <a href="https://github.com/brettwooldridge/HikariCP">HikariCP at GitHub</a>
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+@Suppress("unused", "ConstPropertyName")
+object Hikari {
+    private const val version = "7.1.0"
+    const val lib = "com.zaxxer:HikariCP:$version"
 }

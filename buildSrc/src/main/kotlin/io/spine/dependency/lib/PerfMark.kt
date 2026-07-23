@@ -26,19 +26,9 @@
 
 package io.spine.dependency.lib
 
-/**
- * gRPC-Kotlin/JVM.
- *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
- */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+// https://github.com/perfmark/perfmark
+@Suppress("unused", "ConstPropertyName")
+object PerfMark {
+    private const val version = "0.27.0"
+    const val api = "io.perfmark:perfmark-api:$version"
 }

@@ -24,21 +24,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+package io.spine.dependency.storage
 
 /**
- * gRPC-Kotlin/JVM.
+ * HyperSQL DataBase (HSQLDB) — a relational database engine written in Java, used in its
+ * in-memory mode for exercising the JDBC storage in tests.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * HSQLDB is hosted on SourceForge rather than GitHub.
+ *
+ * @see <a href="https://hsqldb.org/">HyperSQL Database site</a>
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+@Suppress("unused", "ConstPropertyName")
+object HsqlDb {
+    private const val version = "2.7.4"
+    const val lib = "org.hsqldb:hsqldb:$version"
 }

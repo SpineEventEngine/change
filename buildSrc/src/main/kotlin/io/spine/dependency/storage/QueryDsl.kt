@@ -24,21 +24,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.spine.dependency.lib
+package io.spine.dependency.storage
 
 /**
- * gRPC-Kotlin/JVM.
+ * QueryDSL — a framework for constructing type-safe SQL-like queries in Java.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * The JDBC storage uses the SQL module to build database queries.
+ *
+ * @see <a href="https://github.com/querydsl/querydsl">QueryDSL at GitHub</a>
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
+@Suppress("unused", "ConstPropertyName")
+object QueryDsl {
+    private const val version = "5.1.0"
+    private const val group = "com.querydsl"
 
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+    /**
+     * The SQL module of QueryDSL.
+     */
+    const val sql = "$group:querydsl-sql:$version"
 }

@@ -27,18 +27,16 @@
 package io.spine.dependency.lib
 
 /**
- * gRPC-Kotlin/JVM.
+ * Annotations library from JetBrains.
  *
- * @see <a href="https://github.com/grpc/grpc-kotlin">GitHub project</a>
+ * https://github.com/JetBrains/java-annotations
  */
-@Suppress("unused")
-object GrpcKotlin {
-    const val version = "1.5.0"
-    const val stub = "io.grpc:grpc-kotlin-stub:$version"
-
-    object ProtocPlugin {
-        const val id = "grpckt"
-        // https://central.sonatype.com/artifact/io.grpc/protoc-gen-grpc-kotlin
-        const val artifact = "io.grpc:protoc-gen-grpc-kotlin:$version:jdk8@jar"
-    }
+object JetBrainsAnnotations {
+    /**
+     * The version of the library transitively used.
+     */
+    const val version = "26.1.0"
+    const val groupId = "org.jetbrains"
+    const val artifactId = "annotations"
+    const val lib = "$groupId:$artifactId:$version"
 }

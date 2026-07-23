@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,16 +55,16 @@ import io.spine.dependency.Dependency
  */
 @Suppress(
     "unused" /* Some subprojects do not use the Compiler directly. */,
-    "ConstPropertyName" /* We use custom convention for artifact properties. */,
+    "ConstPropertyName" /* We use a custom convention for artifact properties. */,
     "MemberVisibilityCanBePrivate" /* The properties are used directly by other subprojects. */,
 )
 object Compiler : Dependency() {
     const val pluginGroup = Spine.group
-    override val group = "io.spine.tools"
+    override val group = Spine.toolsGroup
     const val pluginId = "io.spine.compiler"
 
     /**
-     * Identifies the Compiler as a `classpath` dependency under `buildScript` block.
+     * Identifies the Compiler as a `classpath` dependency under the `buildScript` block.
      */
     const val module = "io.spine.tools:compiler"
 
@@ -72,7 +72,7 @@ object Compiler : Dependency() {
      * The version of the Compiler dependencies.
      */
     override val version: String
-    private const val fallbackVersion = "2.0.0-SNAPSHOT.037"
+    private const val fallbackVersion = "2.0.0-SNAPSHOT.062"
 
     /**
      * The distinct version of the Compiler used by other build tools.
@@ -81,7 +81,7 @@ object Compiler : Dependency() {
      * transitive dependencies, this is the version used to build the project itself.
      */
     val dogfoodingVersion: String
-    private const val fallbackDfVersion = "2.0.0-SNAPSHOT.037"
+    private const val fallbackDfVersion = "2.0.0-SNAPSHOT.062"
 
     /**
      * The artifact for the Compiler Gradle plugin.
