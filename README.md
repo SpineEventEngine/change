@@ -11,10 +11,10 @@
 
 Currently, the library supports only Java, with JavaScript and Dart being on the priority list.
 
-All modules are built with Java 11. Therefore, consumer projects should aim for Java 11+
+All modules are built with Java 17. Therefore, consumer projects should aim for Java 17+
 to use them.
 
-## Using Spine Change in a Java Project
+## Using in a Gradle project
 
 To add a dependency to a Gradle project, please use the following:
 

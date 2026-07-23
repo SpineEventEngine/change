@@ -1,4 +1,4 @@
 
-rootProject.name = "spine-change"
+rootProject.name = "change"
 
 include("change")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public final class StringMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a non-empty value,
+     * Creates a {@code ValueMismatch} for the case of discovering a non-empty value,
      * when an empty string was expected by a command.
      *
      * @param actual   the value discovered instead of the empty string
@@ -72,7 +72,7 @@ public final class StringMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a value
+     * Creates a {@code ValueMismatch} for the case of discovering a value
      * different than expected by a command.
      *
      * @param expected the value expected by the command
@@ -109,9 +109,9 @@ public final class StringMismatch {
     }
 
     /**
-     * Obtains expected string from the passed mismatch.
+     * Obtains the expected string from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-string values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-string values
      */
     public static String unpackExpected(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -120,9 +120,9 @@ public final class StringMismatch {
     }
 
     /**
-     * Obtains actual string from the passed mismatch.
+     * Obtains the actual string from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-string values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-string values
      */
     public static String unpackActual(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -131,9 +131,9 @@ public final class StringMismatch {
     }
 
     /**
-     * Obtains new value string from the passed mismatch.
+     * Obtains the new value string from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-string values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-string values
      */
     public static String unpackNewValue(ValueMismatch mismatch) {
         checkNotNull(mismatch);

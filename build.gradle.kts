@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,36 +26,14 @@
 
 @file:Suppress("RemoveRedundantQualifierName")
 
-import com.google.protobuf.gradle.id
-import io.spine.dependency.build.ErrorProne
-import io.spine.dependency.kotlinx.Coroutines
-import io.spine.dependency.lib.Grpc
-import io.spine.dependency.lib.Jackson
-import io.spine.dependency.lib.Kotlin
-import io.spine.dependency.lib.KotlinPoet
-import io.spine.dependency.lib.Protobuf
-import io.spine.dependency.local.Base
-import io.spine.dependency.local.CoreJvm
-import io.spine.dependency.local.Logging
-import io.spine.dependency.local.ToolBase
-import io.spine.dependency.local.Validation
-import io.spine.gradle.checkstyle.CheckStyleConfig
-import io.spine.gradle.github.pages.updateGitHubPages
-import io.spine.gradle.javac.configureErrorProne
-import io.spine.gradle.javac.configureJavac
-import io.spine.gradle.javadoc.JavadocConfig
-import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.PublishingRepos
-import io.spine.gradle.publish.PublishingRepos.gitHub
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.repo.standardToSpineSdk
-import io.spine.gradle.report.coverage.JacocoConfig
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 
 buildscript {
     standardSpineSdkRepositories()
-    doForceVersions(configurations)
 
     dependencies {
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
@@ -63,30 +41,13 @@ buildscript {
         classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
     }
 
-    val validation = io.spine.dependency.local.Validation
-    val logging = io.spine.dependency.local.Logging
-    val base = io.spine.dependency.local.Base
     configurations {
         all {
             resolutionStrategy {
-                val jackson = io.spine.dependency.lib.Jackson
-                val cfg = this@all
-                val rs = this@resolutionStrategy
-                jackson.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
-
-                io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
-
                 force(
                     io.spine.dependency.lib.Kotlin.bom,
-                    io.spine.dependency.lib.Grpc.bom,
-                    jackson.annotations,
-                    base.annotations,
-                    base.lib,
-                    validation.runtime,
-                    logging.lib,
-                    io.spine.dependency.local.Time.lib,
-                    io.spine.dependency.local.Time.javaExtensions,
+                    io.spine.dependency.build.Dokka.BasePlugin.lib,
+                    io.spine.dependency.local.Base.lib,
                 )
             }
         }
@@ -102,7 +63,6 @@ plugins {
     `java-library`
     kotlin("jvm")
     protobuf
-    jacoco
     `project-report`
     errorprone
 }
@@ -121,106 +81,9 @@ spinePublishing {
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-
     group = "io.spine"
     version = extra["versionToPublish"]!!
-
-    configurations {
-        forceVersions()
-        all {
-            exclude("io.spine:spine-validate")
-            resolutionStrategy {
-                val cfg = this@all
-                val rs = this@resolutionStrategy
-                Kotlin.StdLib.forceArtifacts(project, cfg, rs)
-                Kotlin.forceArtifacts(project, cfg, rs)
-                Coroutines.forceArtifacts(project, cfg, rs)
-                Jackson.forceArtifacts(project, cfg, rs)
-                Jackson.DataType.forceArtifacts(project, cfg, rs)
-                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
-                Grpc.forceArtifacts(project, cfg, rs)
-                force(
-                    Protobuf.javaLib,
-                    Jackson.annotations,
-                    Jackson.bom,
-                    Grpc.bom,
-                    Kotlin.bom,
-                    KotlinPoet.lib,
-                    ToolBase.lib,
-                    Base.lib,
-                    Base.annotations,
-                    Validation.runtime,
-                    Validation.javaBundle,
-                    Logging.lib,
-                    CoreJvm.server,
-                    Protobuf.compiler
-                )
-            }
-        }
-    }
-}
-
-subprojects {
-
-    apply {
-        plugin("java-library")
-        plugin("kotlin")
-        plugin("com.google.protobuf")
-        plugin("net.ltgt.errorprone")
-        plugin("pmd")
-        plugin("checkstyle")
-        plugin("idea")
-        plugin("pmd-settings")
-        plugin("jacoco")
-        plugin("module-testing")
-        plugin("dokka-setup")
-    }
-
-    repositories {
-        gitHub("change")
-        standardToSpineSdk()
-    }
-
-    dependencies {
-        errorprone(ErrorProne.core)
-    }
-
-    val javaVersion = JavaVersion.VERSION_17
-
-    java {
-        sourceCompatibility = javaVersion
-        targetCompatibility = javaVersion
-
-        tasks {
-            withType<JavaCompile>().configureEach {
-                configureJavac()
-                configureErrorProne()
-            }
-            withType<org.gradle.jvm.tasks.Jar>().configureEach {
-                duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            }
-        }
-    }
-
-    kotlin {
-        explicitApi()
-        compilerOptions {
-            jvmTarget.set(BuildSettings.jvmTarget)
-            setFreeCompilerArgs()
-        }
-    }
-
-    LicenseReporter.generateReportIn(project)
-    JavadocConfig.applyTo(project)
-    CheckStyleConfig.applyTo(project)
-
-    updateGitHubPages() {
-        rootFolder.set(rootDir)
-    }
-
-    project.configureTaskDependencies()
 }
 
 LicenseReporter.mergeAllReports(project)
-JacocoConfig.applyTo(project)
 PomGenerator.applyTo(project)

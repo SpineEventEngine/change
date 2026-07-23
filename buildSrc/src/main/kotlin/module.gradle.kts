@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,135 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// This is a template file for an actual script which should be
-// defined by a project to which `config` is applied.
-//
-// The reason for having this file is that it is referenced as
-// a plugin in `uber-jar-module.gradle.kts`
+import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.kotlinx.Coroutines
+import io.spine.dependency.lib.Grpc
+import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.Kotlin
+import io.spine.dependency.lib.KotlinPoet
+import io.spine.dependency.lib.Protobuf
+import io.spine.dependency.local.Base
+import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Time
+import io.spine.dependency.local.ToolBase
+import io.spine.dependency.local.Validation
+import io.spine.dependency.test.Jacoco
+import io.spine.gradle.checkstyle.CheckStyleConfig
+import io.spine.gradle.github.pages.updateGitHubPages
+import io.spine.gradle.javac.configureErrorProne
+import io.spine.gradle.javac.configureJavac
+import io.spine.gradle.javadoc.JavadocConfig
+import io.spine.gradle.kotlin.setFreeCompilerArgs
+import io.spine.gradle.publish.PublishingRepos.gitHub
+import io.spine.gradle.repo.standardToSpineSdk
+import io.spine.gradle.report.license.LicenseReporter
+import org.gradle.jvm.tasks.Jar
+
+plugins {
+    `java-library`
+    kotlin("jvm")
+    id("com.google.protobuf")
+    id("net.ltgt.errorprone")
+    id("pmd")
+    id("checkstyle")
+    id("idea")
+    id("pmd-settings")
+    id("org.jetbrains.kotlinx.kover")
+    id("module-testing")
+    id("dokka-setup")
+}
+LicenseReporter.generateReportIn(project)
+JavadocConfig.applyTo(project)
+CheckStyleConfig.applyTo(project)
+
+repositories {
+    gitHub("change")
+    standardToSpineSdk()
+}
+
+dependencies {
+    errorprone(ErrorProne.core)
+}
+
+val javaVersion = JavaVersion.VERSION_17
+
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+
+    tasks {
+        withType<JavaCompile>().configureEach {
+            configureJavac()
+            configureErrorProne()
+        }
+        withType<Jar>().configureEach {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        }
+    }
+}
+
+kotlin {
+    explicitApi()
+    compilerOptions {
+        jvmTarget.set(BuildSettings.jvmTarget)
+        setFreeCompilerArgs()
+    }
+}
+
+kover {
+    useJacoco(version = Jacoco.version)
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
+    }
+}
+
+updateGitHubPages() {
+    rootFolder.set(rootDir)
+}
+
+project.forceDependencies()
+project.configureTaskDependencies()
+
+private fun Project.forceDependencies() {
+    configurations {
+        forceVersions()
+        all {
+            exclude("io.spine:spine-validate")
+            resolutionStrategy {
+                val cfg = this@all
+                val rs = this@resolutionStrategy
+                Kotlin.StdLib.forceArtifacts(project, cfg, rs)
+                Kotlin.forceArtifacts(project, cfg, rs)
+                Coroutines.forceArtifacts(project, cfg, rs)
+                Jackson.forceArtifacts(project, cfg, rs)
+                Jackson.DataType.forceArtifacts(project, cfg, rs)
+                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                Grpc.forceArtifacts(project, cfg, rs)
+                Time.forceArtifacts(project, cfg, rs)
+                force(
+                    Jackson.annotations,
+                    Jackson.bom,
+                    Grpc.bom,
+                    Kotlin.bom,
+                    KotlinPoet.lib,
+                    Protobuf.javaLib,
+                    ToolBase.lib,
+                    Base.lib,
+                    Base.annotations,
+                    Base.environment,
+                    Base.format,
+                    Validation.runtime,
+                    Validation.javaBundle,
+                    Logging.lib,
+                    CoreJvm.server,
+                    Protobuf.compiler
+                )
+            }
+        }
+    }
+}

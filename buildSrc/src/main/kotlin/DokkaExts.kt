@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
  */
 
 import io.spine.dependency.build.Dokka
+import io.spine.gradle.SpineTaskGroup
 import io.spine.gradle.publish.getOrCreate
 import java.io.File
 import java.time.LocalDate
@@ -197,13 +198,15 @@ fun TaskContainer.dokkaHtmlTask(): Task? = this.findByName("dokkaGeneratePublica
 fun TaskContainer.dokkaJavadocTask(): Task? = this.findByName("dokkaGeneratePublicationJavadoc")
 
 /**
- * Locates or creates `htmlDocsJar` task in this [Project].
+ * Locates or creates the `htmlDocsJar` task in this [Project].
  *
  * The output of this task is a `jar` archive. The archive contains the Dokka output, generated upon
- * Kotlin sources from `main` source set. Requires Dokka to be configured in the target project by
- * applying `dokka-setup` plugin.
+ * Kotlin sources from the `main` source set. Requires Dokka to be configured in the target project by
+ * applying the `dokka-setup` plugin.
  */
 fun Project.htmlDocsJar(): TaskProvider<Jar> = tasks.getOrCreate("htmlDocsJar") {
+    group = SpineTaskGroup.name
+    description = "Assembles a JAR with generated Dokka HTML docs"
     archiveClassifier.set("html-docs")
     from(files(dokkaHtmlOutput()))
 
@@ -213,7 +216,7 @@ fun Project.htmlDocsJar(): TaskProvider<Jar> = tasks.getOrCreate("htmlDocsJar") 
 }
 
 /**
- * Tells if this task belongs to the execution graph which contains
+ * Tells if this task belongs to the execution graph that contains
  * the `publish` and `dokkaGenerate` tasks.
  *
  * This predicate could be useful for disabling publishing tasks

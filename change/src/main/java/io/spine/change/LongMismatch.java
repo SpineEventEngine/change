@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public final class LongMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering not zero value,
+     * Creates a {@code ValueMismatch} for the case of discovering a non-zero value,
      * when a zero amount was expected by a command.
      *
      * @param actual   the value discovered instead of zero
@@ -57,8 +57,8 @@ public final class LongMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering zero value,
-     * when a non zero amount was expected by a command.
+     * Creates a {@code ValueMismatch} for the case of discovering a zero value,
+     * when a non-zero amount was expected by a command.
      *
      * @param expected the value of the field that the command wanted to clear
      * @param newValue the new value requested in the command
@@ -70,8 +70,8 @@ public final class LongMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a value
-     * different than by a command.
+     * Creates a {@code ValueMismatch} for the case of discovering a value
+     * different than expected by a command.
      *
      * @param expected the value expected by the command
      * @param actual   the value discovered instead of the expected string
@@ -103,9 +103,9 @@ public final class LongMismatch {
     }
 
     /**
-     * Obtains expected long value from the passed mismatch.
+     * Obtains the expected long value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-long values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-long values
      */
     public static long unpackExpected(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -114,9 +114,9 @@ public final class LongMismatch {
     }
 
     /**
-     * Obtains actual long value from the passed mismatch.
+     * Obtains the actual long value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-long values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-long values
      */
     public static long unpackActual(ValueMismatch mismatch) {
         checkNotNull(mismatch);
@@ -125,9 +125,9 @@ public final class LongMismatch {
     }
 
     /**
-     * Obtains new long value from the passed mismatch.
+     * Obtains the new long value from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of non-long values
+     * @throws RuntimeException if the passed instance represents a mismatch of non-long values
      */
     public static long unpackNewValue(ValueMismatch mismatch) {
         checkNotNull(mismatch);

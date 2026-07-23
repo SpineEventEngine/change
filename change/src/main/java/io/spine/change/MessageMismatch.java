@@ -1,5 +1,5 @@
 /*
- * Copyright 2022, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public final class MessageMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a non-default value,
+     * Creates a {@code ValueMismatch} for the case of discovering a non-default value,
      * when the default value was expected by a command.
      *
      * @param actual   the value discovered instead of the default value
@@ -91,8 +91,8 @@ public final class MessageMismatch {
     }
 
     /**
-     * Creates {@code ValueMismatch} for the case of discovering a value
-     * different than by a command.
+     * Creates a {@code ValueMismatch} for the case of discovering a value
+     * different than expected by a command.
      *
      * @param expected the value expected by the command
      * @param actual   the value discovered instead of the expected value
@@ -125,9 +125,9 @@ public final class MessageMismatch {
     }
 
     /**
-     * Obtains expected value as a {@code Message} from the passed mismatch.
+     * Obtains the expected value as a {@code Message} from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of
+     * @throws RuntimeException if the passed instance represents a mismatch of
      *                          non-{@code Message} values
      */
     public static Message unpackExpected(ValueMismatch mismatch) {
@@ -138,9 +138,9 @@ public final class MessageMismatch {
     }
 
     /**
-     * Obtains actual value as a {@code Message} from the passed mismatch.
+     * Obtains the actual value as a {@code Message} from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of
+     * @throws RuntimeException if the passed instance represents a mismatch of
      *                          non-{@code Message} values
      */
     public static Message unpackActual(ValueMismatch mismatch) {
@@ -151,9 +151,9 @@ public final class MessageMismatch {
     }
 
     /**
-     * Obtains new value as a {@code Message} from the passed mismatch.
+     * Obtains the new value as a {@code Message} from the passed mismatch.
      *
-     * @throws RuntimeException if the passed instance represent a mismatch of
+     * @throws RuntimeException if the passed instance represents a mismatch of
      *                          non-{@code Message} values
      */
     public static Message unpackNewValue(ValueMismatch mismatch) {
