@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Time
 import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
 import io.spine.gradle.checkstyle.CheckStyleConfig
@@ -120,6 +121,7 @@ private fun Project.forceDependencies() {
                 Jackson.DataType.forceArtifacts(project, cfg, rs)
                 Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 Grpc.forceArtifacts(project, cfg, rs)
+                Time.forceArtifacts(project, cfg, rs)
                 force(
                     Jackson.annotations,
                     Jackson.bom,
@@ -130,6 +132,8 @@ private fun Project.forceDependencies() {
                     ToolBase.lib,
                     Base.lib,
                     Base.annotations,
+                    Base.environment,
+                    Base.format,
                     Validation.runtime,
                     Validation.javaBundle,
                     Logging.lib,

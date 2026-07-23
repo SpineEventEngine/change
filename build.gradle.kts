@@ -1,5 +1,5 @@
 /*
- * Copyright 2025, TeamDev. All rights reserved.
+ * Copyright 2026, TeamDev. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import io.spine.gradle.report.pom.PomGenerator
 
 buildscript {
     standardSpineSdkRepositories()
-    doForceVersions(configurations)
 
     dependencies {
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
@@ -43,30 +42,13 @@ buildscript {
         classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
     }
 
-    val validation = io.spine.dependency.local.Validation
-    val logging = io.spine.dependency.local.Logging
-    val base = io.spine.dependency.local.Base
     configurations {
         all {
             resolutionStrategy {
-                val jackson = io.spine.dependency.lib.Jackson
-                val cfg = this@all
-                val rs = this@resolutionStrategy
-                jackson.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
-
-                io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
-
                 force(
                     io.spine.dependency.lib.Kotlin.bom,
-                    io.spine.dependency.lib.Grpc.bom,
-                    jackson.annotations,
-                    base.annotations,
-                    base.lib,
-                    validation.runtime,
-                    logging.lib,
-                    io.spine.dependency.local.Time.lib,
-                    io.spine.dependency.local.Time.javaExtensions,
+                    io.spine.dependency.build.Dokka.BasePlugin.lib,
+                    io.spine.dependency.local.Base.lib,
                 )
             }
         }
