@@ -37,6 +37,7 @@ import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Time
 import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
+import io.spine.dependency.test.Jacoco
 import io.spine.gradle.checkstyle.CheckStyleConfig
 import io.spine.gradle.github.pages.updateGitHubPages
 import io.spine.gradle.javac.configureErrorProne
@@ -57,7 +58,7 @@ plugins {
     id("checkstyle")
     id("idea")
     id("pmd-settings")
-    id("jacoco")
+    id("org.jetbrains.kotlinx.kover")
     id("module-testing")
     id("dokka-setup")
 }
@@ -96,6 +97,17 @@ kotlin {
     compilerOptions {
         jvmTarget.set(BuildSettings.jvmTarget)
         setFreeCompilerArgs()
+    }
+}
+
+kover {
+    useJacoco(version = Jacoco.version)
+    reports {
+        total {
+            xml {
+                onCheck = true
+            }
+        }
     }
 }
 
