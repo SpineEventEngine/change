@@ -90,6 +90,20 @@ allprojects {
     apply(from = "$rootDir/version.gradle.kts")
     group = "io.spine"
     version = extra["versionToPublish"]!!
+
+    configurations.all {
+        resolutionStrategy {
+            // Floor artifacts (the currently published Time and Validation)
+            // request the pre-refresh versions of these; the Protobuf runtime
+            // must never be older than the refreshed gencode.
+            force(
+                io.spine.dependency.kotlinx.Coroutines.bom,
+                io.spine.dependency.kotlinx.AtomicFu.lib,
+                io.spine.dependency.lib.Protobuf.javaLib,
+                io.spine.dependency.lib.Caffeine.lib,
+            )
+        }
+    }
 }
 
 LicenseReporter.mergeAllReports(project)
