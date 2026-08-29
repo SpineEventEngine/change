@@ -38,7 +38,7 @@ buildscript {
     dependencies {
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
         classpath(io.spine.dependency.local.Compiler.pluginLib)
-        classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
+        classpath(io.spine.dependency.local.CoreJvmCompiler.gradlePlugin)
     }
 
     configurations {
@@ -46,6 +46,13 @@ buildscript {
             resolutionStrategy {
                 force(
                     io.spine.dependency.lib.Kotlin.bom,
+                    // Floor artifacts request the pre-refresh versions of
+                    // these; the Protobuf runtime must never be older than
+                    // the refreshed gencode.
+                    io.spine.dependency.kotlinx.Coroutines.bom,
+                    io.spine.dependency.kotlinx.AtomicFu.lib,
+                    io.spine.dependency.lib.Protobuf.javaLib,
+                    io.spine.dependency.lib.Caffeine.lib,
                     io.spine.dependency.build.Dokka.BasePlugin.lib,
                     io.spine.dependency.local.Base.lib,
                 )
