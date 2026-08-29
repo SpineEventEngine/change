@@ -96,7 +96,13 @@ allprojects {
             // Floor artifacts (the currently published Time and Validation)
             // request the pre-refresh versions of these; the Protobuf runtime
             // must never be older than the refreshed gencode.
+            io.spine.dependency.lib.JacksonV2.Core.forceArtifacts(project, this@all, this@resolutionStrategy)
+            io.spine.dependency.lib.JacksonV2.DataType.forceArtifacts(project, this@all, this@resolutionStrategy)
+            io.spine.dependency.lib.JacksonV2.DataFormat.forceArtifacts(project, this@all, this@resolutionStrategy)
+            io.spine.dependency.lib.JacksonV2.Module.forceArtifacts(project, this@all, this@resolutionStrategy)
             force(
+                io.spine.dependency.lib.JacksonV2.bom,
+                io.spine.dependency.lib.Jackson.bom,
                 io.spine.dependency.kotlinx.Coroutines.bom,
                 io.spine.dependency.kotlinx.AtomicFu.lib,
                 io.spine.dependency.lib.Protobuf.javaLib,
