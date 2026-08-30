@@ -26,6 +26,13 @@
 
 @file:Suppress("RemoveRedundantQualifierName")
 
+import io.spine.dependency.isDokka
+import io.spine.dependency.kotlinx.AtomicFu
+import io.spine.dependency.kotlinx.Coroutines
+import io.spine.dependency.lib.Caffeine
+import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.JacksonV2
+import io.spine.dependency.lib.Protobuf
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.repo.standardToSpineSdk
@@ -38,7 +45,7 @@ buildscript {
     dependencies {
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
         classpath(io.spine.dependency.local.Compiler.pluginLib)
-        classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
+        classpath(io.spine.dependency.local.CoreJvmCompiler.gradlePlugin)
     }
 
     configurations {
@@ -46,6 +53,13 @@ buildscript {
             resolutionStrategy {
                 force(
                     io.spine.dependency.lib.Kotlin.bom,
+                    // Floor artifacts request the pre-refresh versions of
+                    // these; the Protobuf runtime must never be older than
+                    // the refreshed gencode.
+                    io.spine.dependency.kotlinx.Coroutines.bom,
+                    io.spine.dependency.kotlinx.AtomicFu.lib,
+                    io.spine.dependency.lib.Protobuf.javaLib,
+                    io.spine.dependency.lib.Caffeine.lib,
                     io.spine.dependency.build.Dokka.BasePlugin.lib,
                     io.spine.dependency.local.Base.lib,
                 )
@@ -83,6 +97,35 @@ allprojects {
     apply(from = "$rootDir/version.gradle.kts")
     group = "io.spine"
     version = extra["versionToPublish"]!!
+
+    configurations {
+        all {
+            if (isDokka) {
+                return@all
+            }
+            resolutionStrategy {
+                val cfg = this@all
+                val rs = this@resolutionStrategy
+                // Floor artifacts (the currently published Time and
+                // Validation) request the pre-refresh versions of these; the
+                // Protobuf runtime must never be older than the refreshed
+                // gencode.
+                JacksonV2.Core.forceArtifacts(project, cfg, rs)
+                JacksonV2.DataType.forceArtifacts(project, cfg, rs)
+                JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
+                JacksonV2.Module.forceArtifacts(project, cfg, rs)
+                JacksonV2.Junior.forceArtifacts(project, cfg, rs)
+                force(
+                    JacksonV2.bom,
+                    Jackson.bom,
+                    Coroutines.bom,
+                    AtomicFu.lib,
+                    Protobuf.javaLib,
+                    Caffeine.lib,
+                )
+            }
+        }
+    }
 }
 
 LicenseReporter.mergeAllReports(project)
