@@ -34,6 +34,7 @@ import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Logging
+import io.spine.dependency.local.Reflect
 import io.spine.dependency.local.Time
 import io.spine.dependency.local.Validation
 import io.spine.dependency.test.Jacoco
@@ -144,6 +145,7 @@ private fun Project.forceDependencies() {
                     Base.annotations,
                     Base.environment,
                     Base.format,
+                    Reflect.lib,
                     Validation.runtime,
                     Validation.javaBundle,
                     Logging.lib,
