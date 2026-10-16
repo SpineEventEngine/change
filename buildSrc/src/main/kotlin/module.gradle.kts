@@ -35,7 +35,6 @@ import io.spine.dependency.local.Base
 import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Logging
 import io.spine.dependency.local.Time
-import io.spine.dependency.local.ToolBase
 import io.spine.dependency.local.Validation
 import io.spine.dependency.test.Jacoco
 import io.spine.gradle.checkstyle.CheckStyleConfig
@@ -141,7 +140,6 @@ private fun Project.forceDependencies() {
                     Kotlin.bom,
                     KotlinPoet.lib,
                     Protobuf.javaLib,
-                    ToolBase.lib,
                     Base.lib,
                     Base.annotations,
                     Base.environment,
