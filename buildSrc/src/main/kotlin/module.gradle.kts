@@ -39,7 +39,7 @@ import io.spine.dependency.local.Time
 import io.spine.dependency.local.Validation
 import io.spine.dependency.test.Jacoco
 import io.spine.gradle.checkstyle.CheckStyleConfig
-import io.spine.gradle.github.pages.updateGitHubPages
+import io.spine.gradle.github.pages.publishApiDocs
 import io.spine.gradle.javac.configureErrorProne
 import io.spine.gradle.javac.configureJavac
 import io.spine.gradle.javadoc.JavadocConfig
@@ -111,7 +111,7 @@ kover {
     }
 }
 
-updateGitHubPages() {
+publishApiDocs {
     rootFolder.set(rootDir)
 }
 
